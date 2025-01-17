@@ -1,10 +1,10 @@
-export const COMMON_MESSAGE = {
+const COMMON_MESSAGE = {
     SOMETHING_IS_MISSING: "Something is missing, please check!",
     SOMETHING_WENT_WRONG: "Something went wrong, please try again!",
     SOMETHING_WENT_WRONG_WITH_DATABASE: "Something went wrong with database, please try again!",
 }
 
-export const USER_MESSAGE = {
+const USER_MESSAGE = {
     USER_NOT_FOUND: "User not found",
     USER_ALREADY_EXISTS: "User already exists",
     EMAIL_ALREADY_EXISTS: "Email already exists",
@@ -16,9 +16,10 @@ export const USER_MESSAGE = {
     INCORRECT_EMAIL_OR_PASSWORD: "Incorrect email or password",
 }
 
-export const POST_MESSAGE = {
+const POST_MESSAGE = {
     POST_NOT_FOUND: "Post not found",
     POST_CREATED_SUCCESSFULLY: "Post created successfully",
     POST_UPDATED_SUCCESSFULLY: "Post updated successfully",
     POST_DELETED_SUCCESSFULLY: "Post deleted successfully",
 }
+module.exports = { COMMON_MESSAGE, USER_MESSAGE, POST_MESSAGE };

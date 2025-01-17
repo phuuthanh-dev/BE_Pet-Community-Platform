@@ -1,8 +1,8 @@
-import bcrypt from "bcryptjs";
-import { User } from "../models/user.model.js";
-import { USER_MESSAGE } from "../constants/messages.js";
-import { ErrorWithStatus } from "../utils/errorWithStatus.js";
-import { StatusCodes } from "http-status-codes";
+const bcrypt = require("bcryptjs");
+const { User } = require("../models/user.model.js");
+const { USER_MESSAGE } = require("../constants/messages.js");
+const { ErrorWithStatus } = require("../utils/errorWithStatus.js");
+const { StatusCodes } = require("http-status-codes");
 
 class AuthService {
   constructor() {
@@ -41,4 +41,4 @@ class AuthService {
 }
 
 const authService = new AuthService();
-export default authService;
+module.exports = authService;

@@ -23,7 +23,7 @@ class Create extends SuccessResponse {
   }
 }
 
-export const CREATED = (res, message, data, options = {}) => {
+const CREATED = (res, message, data, options = {}) => {
   new Create({
     message,
     data,
@@ -31,14 +31,14 @@ export const CREATED = (res, message, data, options = {}) => {
   }).send(res);
 };
 
-export const OK = (res, message, data, options = {}) => {
+const OK = (res, message, data, options = {}) => {
   new Ok({
     message,
     data,
     options,
   }).send(res);
 };
-export const BAD_REQUEST = (res, message, data = null) => {
+const BAD_REQUEST = (res, message, data = null) => {
   return res.status(400).json({
     status: 'fail',
     message,
@@ -46,7 +46,7 @@ export const BAD_REQUEST = (res, message, data = null) => {
   });
 };
 
-export const FORBIDDEN = (res, message, data = null) => {
+const FORBIDDEN = (res, message, data = null) => {
   return res.status(403).json({
     status: 'fail',
     message,
@@ -54,7 +54,7 @@ export const FORBIDDEN = (res, message, data = null) => {
   });
 };
 
-export const NOT_FOUND = (res, message, data = null) => {
+const NOT_FOUND = (res, message, data = null) => {
   return res.status(404).json({
     status: 'fail',
     message,

@@ -1,16 +1,16 @@
 require('dotenv').config();
 
-import express, { urlencoded } from "express";
-import cors from "cors";
-import cookieParser from "cookie-parser";
-import connectDB from "./utils/db.js";
-import userRoute from "./routes/user.route.js";
-import postRoute from "./routes/post.route.js";
-import authRoute from "./routes/auth.route.js";
-import messageRoute from "./routes/message.route.js";
-import { errorHandler } from "./middlewares/error.middlewares.js";
-import { app, server } from "./socket/socket.js";
-import path from "path";
+const express = require("express");
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
+const connectDB = require("./utils/db.js");
+const userRoute = require("./routes/user.route.js");
+const postRoute = require("./routes/post.route.js");
+const authRoute = require("./routes/auth.route.js");
+const messageRoute = require("./routes/message.route.js");
+const { errorHandler } = require("./middlewares/error.middlewares.js");
+const { app, server } = require("./socket/socket.js");
+const path = require("path");
 
 const PORT = process.env.PORT || 3000;
 
