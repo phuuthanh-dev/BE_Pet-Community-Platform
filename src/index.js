@@ -1,14 +1,16 @@
 require('dotenv').config();
 
-const express = require("express");
-const cors = require("cors");
-const cookieParser = require("cookie-parser");
-const connectDB = require("./utils/db.js");
-const userRoute = require("./routes/user.route.js");
-const postRoute = require("./routes/post.route.js");
-const messageRoute = require("./routes/message.route.js");
-const { app, server } = require("./socket/socket.js");
-const path = require("path");
+import express, { urlencoded } from "express";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+import connectDB from "./utils/db.js";
+import userRoute from "./routes/user.route.js";
+import postRoute from "./routes/post.route.js";
+import authRoute from "./routes/auth.route.js";
+import messageRoute from "./routes/message.route.js";
+import { errorHandler } from "./middlewares/error.middlewares.js";
+import { app, server } from "./socket/socket.js";
+import path from "path";
 
 const PORT = process.env.PORT || 3000;
 
@@ -25,9 +27,12 @@ app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
 
 // yha pr apni api ayengi
+app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/post", postRoute);
 app.use("/api/v1/message", messageRoute);
+
+app.use(errorHandler);
 
 
 app.use(express.static(path.join(__dirname, "/frontend/dist")));

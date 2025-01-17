@@ -1,121 +1,53 @@
-const User = require("../models/user.model.js");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const getDataUri = require("../utils/datauri.js");
-const cloudinary = require("../utils/cloudinary.js");
-const Post = require("../models/post.model.js");
-const { getReceiverSocketId, io } = require("../socket/socket.js");
+import { User } from "../models/user.model.js";
+import { StatusCodes } from 'http-status-codes'
+import jwt from "jsonwebtoken";
+import getDataUri from "../utils/datauri.js";
+import cloudinary from "../utils/cloudinary.js";
+import { Post } from "../models/post.model.js";
+import { USER_MESSAGE, COMMON_MESSAGE } from "../constants/messages.js";
+import catchAsync from "../utils/catchAsync.js";
+import authService from "../services/auth.service.js";
+import { OK } from "../configs/response.config.js";
+import { ErrorWithStatus } from "../utils/errorWithStatus.js";
 
-class UserController {
-    register = async (req, res) => {
-        try {
-            const { username, email, password } = req.body;
-            if (!username || !email || !password) {
-                return res.status(401).json({
-                    message: "Something is missing, please check!",
-                    success: false,
-                });
-            }
-            const user = await User.findOne({ email });
-            if (user) {
-                return res.status(401).json({
-                    message: "Try different email",
-                    success: false,
-                });
-            };
-            const hashedPassword = await bcrypt.hash(password, 10);
-            await User.create({
-                username,
-                email,
-                password: hashedPassword,
-                profilePicture: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
-            });
-            return res.status(201).json({
-                message: "Account created successfully.",
-                success: true,
-            });
-        } catch (error) {
-            console.log(error);
-        }
+export const register = catchAsync(async (req, res) => {
+    const { username, email, password } = req.body;
+    if (!username || !email || !password) {
+        throw new ErrorWithStatus({ status: StatusCodes.BAD_REQUEST, message: COMMON_MESSAGE.SOMETHING_IS_MISSING });
     }
-    login = async (req, res) => {
-        try {
-            const { email, password } = req.body;
-            if (!email || !password) {
-                return res.status(401).json({
-                    message: "Something is missing, please check!",
-                    success: false,
-                });
-            }
-            let user = await User.findOne({ email });
-            if (!user) {
-                return res.status(401).json({
-                    message: "Incorrect email or password",
-                    success: false,
-                });
-            }
-            const isPasswordMatch = await bcrypt.compare(password, user.password);
-            if (!isPasswordMatch) {
-                return res.status(401).json({
-                    message: "Incorrect email or password",
-                    success: false,
-                });
-            };
+    const result = await authService.register(req.body);
+    return OK(res, USER_MESSAGE.USER_CREATED_SUCCESSFULLY, result);
+});
 
-            const token = await jwt.sign({ userId: user._id }, process.env.SECRET_KEY, { expiresIn: '1d' });
+export const login = catchAsync(async (req, res) => {
+    const { email, password } = req.body;
+    if (!email || !password) {
+        throw new ErrorWithStatus({ status: StatusCodes.BAD_REQUEST, message: COMMON_MESSAGE.SOMETHING_IS_MISSING });
+    }
+    const result = await authService.login(req.body);
+    return OK(res, USER_MESSAGE.USER_LOGIN_SUCCESSFULLY, result);
+});
 
-            // populate each post if in the posts array
-            const populatedPosts = await Promise.all(
-                user.posts.map(async (postId) => {
-                    const post = await Post.findById(postId);
-                    if (post.author.equals(user._id)) {
-                        return post;
-                    }
-                    return null;
-                })
-            )
-            user = {
-                _id: user._id,
-                username: user.username,
-                email: user.email,
-                profilePicture: user.profilePicture,
-                bio: user.bio,
-                followers: user.followers,
-                following: user.following,
-                posts: populatedPosts
-            }
-            return res.cookie('token', token, { httpOnly: true, sameSite: 'strict', maxAge: 1 * 24 * 60 * 60 * 1000 }).json({
-                message: `Welcome back ${user.username}`,
-                success: true,
-                user
-            });
 
-        } catch (error) {
-            console.log(error);
-        }
-    };
-    logout = async (_, res) => {
-        try {
-            return res.cookie("token", "", { maxAge: 0 }).json({
-                message: 'Logged out successfully.',
-                success: true
-            });
-        } catch (error) {
-            console.log(error);
-        }
-    };
-    getProfile = async (req, res) => {
-        try {
-            const userId = req.params.id;
-            let user = await User.findById(userId).populate({ path: 'posts', createdAt: -1 }).populate('bookmarks');
-            return res.status(200).json({
-                user,
-                success: true
-            });
-        } catch (error) {
-            console.log(error);
-        }
-    };
+export const logout = catchAsync(async (_, res) => {
+    res.clearCookie('token');
+    return OK(res, USER_MESSAGE.USER_LOGOUT_SUCCESSFULLY);
+});
+
+
+
+export const getProfile = async (req, res) => {
+    try {
+        const userId = req.params.id;
+        let user = await User.findById(userId).populate({ path: 'posts', createdAt: -1 }).populate('bookmarks');
+        return res.status(200).json({
+            user,
+            success: true
+        });
+    } catch (error) {
+        console.log(error);
+    }
+};
 
     editProfile = async (req, res) => {
         try {
