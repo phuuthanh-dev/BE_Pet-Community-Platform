@@ -1,5 +1,6 @@
 const { StatusCodes } = require("http-status-codes");
-const { ErrorWithStatus } = require('../utils/errorWithStatus.js');
+const ErrorWithStatus = require('../utils/errorWithStatus.js');
+const { omit } = require('lodash');
 
 const errorHandler = (err, req, res, next) => {
   if (err instanceof ErrorWithStatus) {

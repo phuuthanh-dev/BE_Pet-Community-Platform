@@ -31,11 +31,10 @@ class UserController {
     });
 
 
-    logout = catchAsync(async (_, res) => {
+    logout = catchAsync(async (req, res) => {
         res.clearCookie('token');
         return OK(res, USER_MESSAGE.USER_LOGOUT_SUCCESSFULLY);
     });
-
 
 
     getProfile = async (req, res) => {
