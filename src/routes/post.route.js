@@ -1,7 +1,7 @@
-import express from "express";
-import isAuthenticated from "../middlewares/isAuthenticated.js";
-import upload from "../middlewares/multer.js";
-import { addComment, addNewPost, bookmarkPost, deletePost, dislikePost, getAllPost, getCommentsOfPost, getUserPost, likePost } from "../controllers/post.controller.js";
+const express = require("express");
+const isAuthenticated = require("../middlewares/isAuthenticated.js");
+const upload = require("../middlewares/multer.js");
+const { addComment, addNewPost, bookmarkPost, deletePost, dislikePost, getAllPost, getCommentsOfPost, getUserPost, likePost } = require("../controllers/post.controller.js");
 
 const router = express.Router();
 
@@ -15,5 +15,5 @@ router.route("/:id/comment/all").post(isAuthenticated, getCommentsOfPost);
 router.route("/delete/:id").delete(isAuthenticated, deletePost);
 router.route("/:id/bookmark").get(isAuthenticated, bookmarkPost);
 
-export default router;
+module.exports = router;
 
