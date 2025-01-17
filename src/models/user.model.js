@@ -15,6 +15,7 @@ const userSchema = new mongoose.Schema(
         following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
         posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
         bookmarks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
+        isVerified: { type: Boolean, default: false },
         isActive: { type: Boolean, default: true },
         isDeleted: { type: Boolean, default: false },
         isBlocked: { type: Boolean, default: false },
