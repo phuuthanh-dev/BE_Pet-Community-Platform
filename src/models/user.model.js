@@ -1,4 +1,5 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
+import { GENDER } from "../constants/enums.js";
 
 const userSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
