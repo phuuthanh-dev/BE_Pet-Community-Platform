@@ -61,3 +61,11 @@ const NOT_FOUND = (res, message, data = null) => {
     data
   })
 }
+
+module.exports = {
+  OK,
+  CREATED,
+  BAD_REQUEST,
+  FORBIDDEN,
+  NOT_FOUND
+}

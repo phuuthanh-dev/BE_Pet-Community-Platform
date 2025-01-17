@@ -10,4 +10,11 @@ const ROLE = {
   FORUM_STAFF: 'forum_staff'
 }
 
-module.exports = { GENDER, ROLE }
+const TokenType = {
+  AccessToken: 'access_token',
+  RefreshToken: 'refresh_token',
+  EmailVerifyToken: 'email_verify_token',
+  ForgotPasswordToken: 'forgot_password_token'
+}
+
+module.exports = { GENDER, ROLE, TokenType }

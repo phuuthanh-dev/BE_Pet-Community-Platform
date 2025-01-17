@@ -1,13 +1,11 @@
 const User = require('../models/user.model.js')
 const { StatusCodes } = require('http-status-codes')
-const jwt = require('jsonwebtoken')
 const getDataUri = require('../utils/datauri.js')
 const cloudinary = require('../utils/cloudinary.js')
-const Post = require('../models/post.model.js')
 const { USER_MESSAGE, COMMON_MESSAGE } = require('../constants/messages.js')
 const catchAsync = require('../utils/catchAsync.js')
 const authService = require('../services/auth.service.js')
-const { OK } = require('../configs/response.config.js')
+const { OK, CREATED } = require('../configs/response.config.js')
 const { ErrorWithStatus } = require('../utils/errorWithStatus.js')
 
 class UserController {
@@ -17,7 +15,7 @@ class UserController {
       throw new ErrorWithStatus({ status: StatusCodes.BAD_REQUEST, message: COMMON_MESSAGE.SOMETHING_IS_MISSING })
     }
     const result = await authService.register(req.body)
-    return OK(res, USER_MESSAGE.USER_CREATED_SUCCESSFULLY, result)
+    return CREATED(res, USER_MESSAGE.USER_CREATED_SUCCESSFULLY, result)
   })
 
   login = catchAsync(async (req, res) => {
@@ -30,7 +28,8 @@ class UserController {
   })
 
   logout = catchAsync(async (_, res) => {
-    res.clearCookie('token')
+    res.clearCookie('accessToken')
+    res.clearCookie('refreshToken')
     return OK(res, USER_MESSAGE.USER_LOGOUT_SUCCESSFULLY)
   })
 
