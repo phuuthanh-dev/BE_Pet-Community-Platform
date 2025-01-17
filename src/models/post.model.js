@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 const postSchema = new mongoose.Schema({
     caption: { type: String, default: '' },
     image: [{ type: String, required: true }],
@@ -12,4 +12,5 @@ const postSchema = new mongoose.Schema({
     isRejected: { type: Boolean, default: false },
     isHidden: { type: Boolean, default: false },
 });
-export const Post = mongoose.model('Post', postSchema);
+const Post = mongoose.model('Post', postSchema);
+module.exports = Post;

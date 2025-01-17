@@ -1,7 +1,7 @@
-import { StatusCodes } from "http-status-codes";
-import { ErrorWithStatus } from '../utils/errorWithStatus.js';
+const { StatusCodes } = require("http-status-codes");
+const { ErrorWithStatus } = require('../utils/errorWithStatus.js');
 
-export const errorHandler = (err, req, res, next) => {
+const errorHandler = (err, req, res, next) => {
   if (err instanceof ErrorWithStatus) {
     res.status(err.status || StatusCodes.INTERNAL_SERVER_ERROR).json(err);
     return;
@@ -13,3 +13,5 @@ export const errorHandler = (err, req, res, next) => {
   });
   next();
 };
+
+module.exports = { errorHandler };

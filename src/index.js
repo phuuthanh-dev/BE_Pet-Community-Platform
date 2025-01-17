@@ -1,31 +1,27 @@
-import dotenv from "dotenv";
-dotenv.config();
+require('dotenv').config();
 
-import express, { urlencoded } from "express";
-import cors from "cors";
-import cookieParser from "cookie-parser";
-import connectDB from "./utils/db.js";
-import userRoute from "./routes/user.route.js";
-import postRoute from "./routes/post.route.js";
-import authRoute from "./routes/auth.route.js";
-import messageRoute from "./routes/message.route.js";
-import { errorHandler } from "./middlewares/error.middlewares.js";
-import { app, server } from "./socket/socket.js";
-import path from "path";
+const express = require("express");
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
+const connectDB = require("./utils/db.js");
+const userRoute = require("./routes/user.route.js");
+const postRoute = require("./routes/post.route.js");
+const authRoute = require("./routes/auth.route.js");
+const messageRoute = require("./routes/message.route.js");
+const { errorHandler } = require("./middlewares/error.middlewares.js");
+const { app, server } = require("./socket/socket.js");
+const path = require("path");
 
 const PORT = process.env.PORT || 3000;
-
-const __dirname = path.resolve();
 
 //middlewares
 app.use(express.json());
 app.use(cookieParser());
-app.use(urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
 const corsOptions = {
     origin: "http://localhost:5173",
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
-    optionsSuccessStatus: 204
 }
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
@@ -43,7 +39,6 @@ app.use(express.static(path.join(__dirname, "/frontend/dist")));
 app.get("*", (req, res) => {
     res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
 })
-
 
 server.listen(PORT, () => {
     connectDB();
