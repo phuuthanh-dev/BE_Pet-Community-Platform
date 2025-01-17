@@ -9,6 +9,7 @@ const catchAsync = require("../utils/catchAsync.js");
 const authService = require("../services/auth.service.js");
 const { OK } = require("../configs/response.config.js");
 const { ErrorWithStatus } = require("../utils/errorWithStatus.js");
+const { getReceiverSocketId, io } = require("../socket/socket.js");
 
 class UserController {
     register = catchAsync(async (req, res) => {
