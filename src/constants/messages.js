@@ -13,12 +13,7 @@ const USER_MESSAGE = {
   USER_DELETED_SUCCESSFULLY: 'User deleted successfully',
   USER_LOGIN_SUCCESSFULLY: 'User login successfully',
   USER_LOGOUT_SUCCESSFULLY: 'User logout successfully',
-  USER_SEND_VERIFY_EMAIL_SUCCESSFULLY: 'User send verify email successfully',
-  INCORRECT_EMAIL_OR_PASSWORD: 'Incorrect email or password',
-  GET_USER_PROFILE_SUCCESSFULLY: 'Get user profile successfully',
-  USER_EMAIL_VERIFIED_SUCCESSFULLY: 'User email verified successfully',
-  USER_FORGOT_PASSWORD_VERIFIED_SUCCESSFULLY: 'User forgot password verified successfully',
-  USER_PASSWORD_RESET_SUCCESSFULLY: 'User password reset successfully'
+  INCORRECT_EMAIL_OR_PASSWORD: 'Incorrect email or password'
 }
 
 const POST_MESSAGE = {
