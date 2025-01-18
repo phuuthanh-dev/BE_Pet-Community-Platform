@@ -1,5 +1,4 @@
 const express = require('express')
-const isAuthenticated = require('../middlewares/isAuthenticated.js')
 const upload = require('../middlewares/multer.js')
 const {
   addComment,
@@ -9,9 +8,11 @@ const {
   dislikePost,
   getAllPost,
   getCommentsOfPost,
+  getPostById,
   getUserPost,
   likePost
 } = require('../controllers/post.controller.js')
+const isAuthenticated = require('../middlewares/isAuthenticated.js')
 
 const router = express.Router()
 
@@ -22,6 +23,7 @@ router.route('/:id/like').get(isAuthenticated, likePost)
 router.route('/:id/dislike').get(isAuthenticated, dislikePost)
 router.route('/:id/comment').post(isAuthenticated, addComment)
 router.route('/:id/comment/all').post(isAuthenticated, getCommentsOfPost)
+router.route('/:id/getpostbyid').get(isAuthenticated, getPostById)
 router.route('/delete/:id').delete(isAuthenticated, deletePost)
 router.route('/:id/bookmark').get(isAuthenticated, bookmarkPost)
 

@@ -1,13 +1,14 @@
 
 const User = require('../models/user.model.js')
+const { StatusCodes } = require('http-status-codes')
 const getDataUri = require('../utils/datauri.js')
 const cloudinary = require('../utils/cloudinary.js')
-const { USER_MESSAGE } = require('../constants/messages.js')
+const { USER_MESSAGE, COMMON_MESSAGE } = require('../constants/messages.js')
 const catchAsync = require('../utils/catchAsync.js')
-const userService = require('../services/user.service.js')
-const { OK } = require('../configs/response.config.js')
+const authService = require('../services/auth.service.js')
+const { OK, CREATED } = require('../configs/response.config.js')
 const { getReceiverSocketId, io } = require('../socket/socket.js')
-
+const ErrorWithStatus = require('../utils/errorWithStatus.js')
 
 class UserController {
 

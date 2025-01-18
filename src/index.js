@@ -4,14 +4,10 @@ const express = require('express')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
 const connectDB = require('./utils/db.js')
-const userRoute = require('./routes/user.route.js')
-const postRoute = require('./routes/post.route.js')
-const authRoute = require('./routes/auth.route.js')
-const messageRoute = require('./routes/message.route.js')
+const appRouter = require('./routes')
 const { errorHandler } = require('./middlewares/error.middlewares.js')
 const { app, server } = require('./socket/socket.js')
 const path = require('path')
-
 const PORT = process.env.PORT || 3000
 
 //middlewares
@@ -26,11 +22,7 @@ const corsOptions = {
 app.use(cors(corsOptions))
 app.options('*', cors(corsOptions))
 
-// yha pr apni api ayengi
-app.use('/api/v1/auth', authRoute)
-app.use('/api/v1/user', userRoute)
-app.use('/api/v1/post', postRoute)
-app.use('/api/v1/message', messageRoute)
+app.use('/api/v1', appRouter)
 
 app.use(errorHandler)
 

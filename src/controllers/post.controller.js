@@ -49,13 +49,13 @@ class PostController {
     try {
       const posts = await Post.find()
         .sort({ createdAt: -1 })
-        .populate({ path: 'author', select: 'username profilePicture' })
+        .populate({ path: 'author', select: 'username profilePicture isVerified' })
         .populate({
           path: 'comments',
           sort: { createdAt: -1 },
           populate: {
             path: 'author',
-            select: 'username profilePicture'
+            select: 'username profilePicture isVerified'
           }
         })
       return res.status(200).json({
@@ -73,14 +73,14 @@ class PostController {
         .sort({ createdAt: -1 })
         .populate({
           path: 'author',
-          select: 'username, profilePicture'
+          select: 'username, profilePicture isVerified'
         })
         .populate({
           path: 'comments',
           sort: { createdAt: -1 },
           populate: {
             path: 'author',
-            select: 'username, profilePicture'
+            select: 'username, profilePicture isVerified'
           }
         })
       return res.status(200).json({
@@ -120,7 +120,7 @@ class PostController {
       }
 
       return res.status(200).json({ message: 'Post liked', success: true })
-    } catch (error) {}
+    } catch (error) { }
   }
   dislikePost = async (req, res) => {
     try {
@@ -150,7 +150,7 @@ class PostController {
       }
 
       return res.status(200).json({ message: 'Post disliked', success: true })
-    } catch (error) {}
+    } catch (error) { }
   }
   addComment = async (req, res) => {
     try {
@@ -190,7 +190,7 @@ class PostController {
     try {
       const postId = req.params.id
 
-      const comments = await Comment.find({ post: postId }).populate('author', 'username profilePicture')
+      const comments = await Comment.find({ post: postId }).populate('author', 'username profilePicture isVerified')
 
       if (!comments) return res.status(404).json({ message: 'No comments found for this post', success: false })
 
@@ -225,6 +225,24 @@ class PostController {
         success: true,
         message: 'Post deleted'
       })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  getPostById = async (req, res) => {
+    try {
+      const postId = req.params.id
+      const post = await Post.findById(postId)
+        .populate('author', 'username profilePicture isVerified')
+        .populate({
+          path: 'comments',
+          sort: { createdAt: -1 },
+          populate: {
+            path: 'author',
+            select: 'username profilePicture isVerified'
+          }
+        })
+      return res.status(200).json({ post, success: true })
     } catch (error) {
       console.log(error)
     }
