@@ -1,4 +1,3 @@
-
 const User = require("../models/user.model.js");
 const { StatusCodes } = require('http-status-codes');
 const getDataUri = require("../utils/datauri.js");
@@ -7,9 +6,8 @@ const { USER_MESSAGE, COMMON_MESSAGE } = require("../constants/messages.js");
 const catchAsync = require("../utils/catchAsync.js");
 const authService = require("../services/auth.service.js");
 const { OK, CREATED } = require("../configs/response.config.js");
-const { ErrorWithStatus } = require("../utils/errorWithStatus.js");
 const { getReceiverSocketId, io } = require("../socket/socket.js");
-
+const ErrorWithStatus = require("../utils/errorWithStatus.js");
 
 class UserController {
   register = catchAsync(async (req, res) => {
@@ -27,12 +25,22 @@ class UserController {
       throw new ErrorWithStatus({ status: StatusCodes.BAD_REQUEST, message: COMMON_MESSAGE.SOMETHING_IS_MISSING })
     }
     const result = await authService.login(req.body)
-    return OK(res, USER_MESSAGE.USER_LOGIN_SUCCESSFULLY, result)
+
+    res.cookie('access_token', result.access_token, {
+      httpOnly: true,
+      maxAge: 3600000
+    })
+    res.cookie('refresh_token', result.refresh_token, {
+      httpOnly: true,
+      maxAge: 86400000
+    })
+    
+    return OK(res, USER_MESSAGE.USER_LOGIN_SUCCESSFULLY, result.user)
   })
 
   logout = catchAsync(async (_, res) => {
-    res.clearCookie('accessToken')
-    res.clearCookie('refreshToken')
+    res.clearCookie('access_token')
+    res.clearCookie('refresh_token')
     return OK(res, USER_MESSAGE.USER_LOGOUT_SUCCESSFULLY)
   })
 
@@ -44,6 +52,16 @@ class UserController {
         user,
         success: true
       })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  refreshToken = async (req, res) => {
+    try {
+      const refreshToken = req.cookies?.refresh_token
+      const result = await authService.refreshToken(refreshToken)
+      return OK(res, USER_MESSAGE.USER_LOGIN_SUCCESSFULLY, result.user)
     } catch (error) {
       console.log(error)
     }

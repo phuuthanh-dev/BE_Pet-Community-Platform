@@ -1,5 +1,4 @@
 const express = require('express')
-const isAuthenticated = require('../middlewares/isAuthenticated.js')
 const upload = require('../middlewares/multer.js')
 const {
   addComment,
@@ -12,6 +11,7 @@ const {
   getUserPost,
   likePost
 } = require('../controllers/post.controller.js')
+const isAuthenticated = require('../middlewares/isAuthenticated.js')
 
 const router = express.Router()
 
