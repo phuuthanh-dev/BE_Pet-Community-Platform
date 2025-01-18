@@ -4,7 +4,7 @@ const express = require('express')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
 const connectDB = require('./utils/db.js')
-const appRouter = require('./routes');
+const appRouter = require('./routes')
 const { errorHandler } = require('./middlewares/error.middlewares.js')
 const { app, server } = require('./socket/socket.js')
 const path = require('path')
@@ -22,7 +22,7 @@ const corsOptions = {
 app.use(cors(corsOptions))
 app.options('*', cors(corsOptions))
 
-app.use('/api/v1', appRouter);
+app.use('/api/v1', appRouter)
 
 app.use(errorHandler)
 

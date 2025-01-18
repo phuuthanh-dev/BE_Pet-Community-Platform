@@ -121,6 +121,45 @@ class AuthService {
   logout = async () => {
     return { message: 'Logged out successfully.' }
   }
+
+  verifyEmail = async (email_verify_token) => {
+    const decoded = await verifyToken(email_verify_token, process.env.JWT_SECRET_EMAIL_VERIFY_TOKEN_KEY)
+    console.log('fdfd')
+    const user = await this.user.findById(decoded.user_id)
+    if (!user) {
+      throw new ErrorWithStatus({ status: StatusCodes.BAD_REQUEST, message: USER_MESSAGE.USER_NOT_FOUND })
+    }
+    user.isVerified = true
+    await user.save()
+    return { message: 'Email verified successfully.' }
+  }
+
+  sendVerifyEmail = async (userId) => {
+    const email_verify_token = await this.signEmailVerifyToken({
+      user_id: userId
+    })
+    return {
+      email_verify_token
+    }
+  }
+
+  verifyForgotPassword = async (userId) => {
+    const forgot_password_token = await this.signForgotPasswordToken({
+      user_id: userId
+    })
+    return {
+      forgot_password_token
+    }
+  }
+
+  resetPassword = async (userId, password, confirmPassword) => {
+    if (password !== confirmPassword) {
+      throw new ErrorWithStatus({ status: StatusCodes.BAD_REQUEST, message: USER_MESSAGE.PASSWORD_NOT_MATCH })
+    }
+    const hashedPassword = await bcrypt.hash(password, 10)
+    await this.user.findByIdAndUpdate(userId, { password: hashedPassword })
+    return { message: 'Password reset successfully.' }
+  }
 }
 
 const authService = new AuthService()
