@@ -1,25 +1,23 @@
-const jwt = require("jsonwebtoken");
+const { StatusCodes } = require('http-status-codes')
+const { verifyToken } = require('../utils/jwt.js')
+
 const isAuthenticated = async (req, res, next) => {
-    try {
-        const token = req.cookies.token;
-        
-        if (!token) {
-            return res.status(401).json({
-                message: 'User not authenticated',
-                success: false
-            });
-        }
-        const decode = await jwt.verify(token, process.env.SECRET_KEY);
-        if (!decode) {
-            return res.status(401).json({
-                message: 'Invalid',
-                success: false
-            });
-        }
-        req.id = decode.userId;
-        next();
-    } catch (error) {
-        console.log(error);
+  const accessTokenFromCookie = req.cookies?.access_token
+
+  if (!accessTokenFromCookie) {
+    return res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Unauthorized' })
+  }
+  try {
+    const accessTokenDecoded = await verifyToken(accessTokenFromCookie, process.env.JWT_SECRET_ACCESS_TOKEN_KEY)
+
+    req.jwtDecoded = accessTokenDecoded
+    next()
+  } catch (error) {
+    if (error.message?.includes('jwt expired')) {
+      return res.status(StatusCodes.GONE).json({ message: 'Gone' })
     }
+    return res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Unauthorized' })
+  }
 }
-module.exports = isAuthenticated;
+
+module.exports = isAuthenticated
