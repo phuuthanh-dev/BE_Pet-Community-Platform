@@ -6,7 +6,6 @@ const {
   getSuggestedUsers,
   login,
   logout,
-  register,
   refreshToken
 } = require('../controllers/user.controller.js')
 const isAuthenticated = require('../middlewares/isAuthenticated.js')

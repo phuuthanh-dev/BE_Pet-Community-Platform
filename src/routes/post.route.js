@@ -8,6 +8,7 @@ const {
   dislikePost,
   getAllPost,
   getCommentsOfPost,
+  getPostById,
   getUserPost,
   likePost
 } = require('../controllers/post.controller.js')
@@ -22,6 +23,7 @@ router.route('/:id/like').get(isAuthenticated, likePost)
 router.route('/:id/dislike').get(isAuthenticated, dislikePost)
 router.route('/:id/comment').post(isAuthenticated, addComment)
 router.route('/:id/comment/all').post(isAuthenticated, getCommentsOfPost)
+router.route('/:id/getpostbyid').get(isAuthenticated, getPostById)
 router.route('/delete/:id').delete(isAuthenticated, deletePost)
 router.route('/:id/bookmark').get(isAuthenticated, bookmarkPost)
 
