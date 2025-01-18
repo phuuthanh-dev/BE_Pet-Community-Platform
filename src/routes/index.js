@@ -7,30 +7,30 @@ const authRoute = require('./auth.route')
 const paymentRoute = require('./payment.route')
 
 const routes = [
-  {
-    path: '/auth',
-    route: authRoute
-  },
-  {
-    path: '/user',
-    route: userRoute
-  },
-  {
-    path: '/post',
-    route: postRoute
-  },
-  {
-    path: '/message',
-    route: messageRoute
-  },
-  {
-    path: '/payment',
-    route: paymentRoute
-  }
+    {
+        path: '/auth',
+        route: authRoute
+    },
+    {
+        path: '/user',
+        route: userRoute
+    },
+    {
+        path: '/post',
+        route: postRoute
+    },
+    {
+        path: '/message',
+        route: messageRoute
+    },
+    {
+        path: '/payment',
+        route: paymentRoute
+    }
 ]
 
 routes.forEach((route) => {
-  router.use(route.path, route.route)
+    router.use(route.path, route.route)
 })
 
 module.exports = router
