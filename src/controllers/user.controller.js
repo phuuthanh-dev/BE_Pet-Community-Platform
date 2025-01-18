@@ -34,7 +34,7 @@ class UserController {
       httpOnly: true,
       maxAge: 86400000
     })
-    
+
     return OK(res, USER_MESSAGE.USER_LOGIN_SUCCESSFULLY, result.user)
   })
 

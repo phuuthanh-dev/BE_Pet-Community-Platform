@@ -11,6 +11,7 @@ const isAuthenticated = async (req, res, next) => {
     const accessTokenDecoded = await verifyToken(accessTokenFromCookie, process.env.JWT_SECRET_ACCESS_TOKEN_KEY)
 
     req.jwtDecoded = accessTokenDecoded
+    req.id = accessTokenDecoded.userId
     next()
   } catch (error) {
     if (error.message?.includes('jwt expired')) {
