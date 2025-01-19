@@ -2,13 +2,13 @@ const { StatusCodes } = require('http-status-codes')
 const { verifyToken } = require('../utils/jwt.js')
 
 const isAuthenticated = async (req, res, next) => {
-  const accessTokenFromCookie = req.cookies?.access_token
+  const access_token = req.headers.authorization?.split(' ')[1]
 
-  if (!accessTokenFromCookie) {
+  if (!access_token) {
     return res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Unauthorized' })
   }
   try {
-    const accessTokenDecoded = await verifyToken(accessTokenFromCookie, process.env.JWT_SECRET_ACCESS_TOKEN_KEY)
+    const accessTokenDecoded = await verifyToken(access_token, process.env.JWT_SECRET_ACCESS_TOKEN_KEY)
 
     req.jwtDecoded = accessTokenDecoded
     req.id = accessTokenDecoded.userId

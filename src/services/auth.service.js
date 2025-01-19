@@ -82,7 +82,8 @@ class AuthService {
   refreshToken = async (refreshToken) => {
     const decoded = await verifyToken(refreshToken, process.env.JWT_SECRET_REFRESH_TOKEN_KEY)
     const accessToken = await generateToken({ userId: decoded.userId }, process.env.JWT_SECRET_ACCESS_TOKEN_KEY, parseInt(process.env.ACCESS_TOKEN_EXPIRES_IN) || '24h')
-    return { accessToken }
+    
+    return accessToken
   }
 
   login = async ({ email, password }) => {
