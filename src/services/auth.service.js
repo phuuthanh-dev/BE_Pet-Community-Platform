@@ -68,7 +68,7 @@ class AuthService {
       user_id: newUser._id.toString()
     })
 
-    const [access_token, refresh_token] = await this.signAccessAndRefreshToken({
+    const { access_token, refresh_token } = await this.signAccessAndRefreshToken({
       user_id: newUser._id.toString()
     })
 
@@ -82,13 +82,12 @@ class AuthService {
   refreshToken = async (refreshToken) => {
     const decoded = await verifyToken(refreshToken, process.env.JWT_SECRET_REFRESH_TOKEN_KEY)
     const accessToken = await generateToken({ userId: decoded.userId }, process.env.JWT_SECRET_ACCESS_TOKEN_KEY, parseInt(process.env.ACCESS_TOKEN_EXPIRES_IN) || '24h')
-    
+
     return accessToken
   }
 
   login = async ({ email, password }) => {
-    const isUserExists = await this.user.findOne({ email })
-
+    const isUserExists = await this.user.findOne({ email }).select('-createdAt -updatedAt -__v -isBlocked')
     if (!isUserExists) {
       throw new ErrorWithStatus({ status: StatusCodes.BAD_REQUEST, message: USER_MESSAGE.USER_NOT_FOUND })
     }
@@ -109,7 +108,10 @@ class AuthService {
       bio: isUserExists.bio,
       followers: isUserExists.followers,
       following: isUserExists.following,
-      isVerified: isUserExists.isVerified
+      isVerified: isUserExists.isVerified,
+      isActive: isUserExists.isActive,
+      gender: isUserExists.gender,
+      role: isUserExists.role
     }
 
     return {
