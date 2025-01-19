@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
-const GENDER = require('../constants/enums.js')
-const ROLE = require('../constants/enums.js')
+const { GENDER, ROLE } = require('../constants/enums.js')
+const { DEFAULT_AVATAR } = require('../constants/default.js')
 
 const userSchema = new mongoose.Schema(
     {
@@ -8,9 +8,9 @@ const userSchema = new mongoose.Schema(
         name: { type: String },
         email: { type: String, required: true, unique: true },
         password: { type: String, required: true },
-        profilePicture: { type: String, default: '' },
+        profilePicture: { type: String, default: DEFAULT_AVATAR },
         bio: { type: String, default: '' },
-        gender: { type: String, enum: Object.values(GENDER) },
+        gender: { type: String, enum: Object.values(GENDER), default: GENDER.MALE },
         followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
         following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
         posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema(
         address: { type: String, default: '' },
         phoneNumber: { type: String, default: '' },
         dateOfBirth: { type: Date, default: null },
-        role: { type: String, enum: [ROLE.USER, ROLE.ADMIN, ROLE.SERVICE_STAFF, ROLE.FORUM_STAFF], default: ROLE.USER }
+        role: { type: String, enum: Object.values(ROLE), default: ROLE.USER }
     },
     { timestamps: true }
 )

@@ -14,6 +14,7 @@ const USER_MESSAGE = {
   USER_LOGIN_SUCCESSFULLY: 'User login successfully',
   USER_LOGOUT_SUCCESSFULLY: 'User logout successfully',
   USER_PROFILE_UPDATED_SUCCESSFULLY: 'User profile updated successfully',
+  USER_PROFILE_FETCHED_SUCCESSFULLY: 'User profile fetched successfully',
   USER_FOLLOWED_SUCCESSFULLY: 'User followed successfully',
   USER_UNFOLLOWED_SUCCESSFULLY: 'User unfollowed successfully',
   INCORRECT_EMAIL_OR_PASSWORD: 'Incorrect email or password'
