@@ -24,6 +24,8 @@ const POST_MESSAGE = {
   POST_NOT_FOUND: 'Post not found',
   POST_CREATED_SUCCESSFULLY: 'Post created successfully',
   POST_UPDATED_SUCCESSFULLY: 'Post updated successfully',
-  POST_DELETED_SUCCESSFULLY: 'Post deleted successfully'
+  POST_DELETED_SUCCESSFULLY: 'Post deleted successfully',
+  GET_ALL_POSTS_SUCCESSFULLY: 'Get all posts successfully',
+  POST_FETCHED_SUCCESSFULLY: 'Post fetched successfully'
 }
 module.exports = { COMMON_MESSAGE, USER_MESSAGE, POST_MESSAGE }

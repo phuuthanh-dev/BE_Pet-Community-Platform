@@ -26,8 +26,8 @@ class UserController {
     }
 
     if (imageFile) {
-      const avatarLink = await imgurService.uploadImage(imageFile)
-      if (imageFile) user.profilePicture = avatarLink
+      const avatarLink = await imgurService.uploadImage(imageFile.buffer)
+      user.profilePicture = avatarLink
     }
     if (bio) user.bio = bio
     if (gender) user.gender = gender
