@@ -15,6 +15,41 @@ class DonationService {
     await campaign.save()
     return donation
   }
+  getTop5Donate = async () => {
+    const currentDate = new Date()
+    const campaign = await Campaign.findOne({
+      startDate: { $lte: currentDate },
+      endDate: { $gte: currentDate }
+    })
+    if (!campaign) {
+      throw new ErrorWithStatus({ status: StatusCodes.NOT_FOUND, message: CAMPAIGN_MESSAGE.CAMPAIGN_NOT_FOUND })
+    }
+    const topDonate = await Donation.aggregate([
+      { $match: { campaign: campaign._id } },
+      {
+        $group: {
+          _id: '$user',
+          totalAmount: { $sum: '$amount' },
+          lastMessage: { $last: '$message' }
+        }
+      },
+      { $sort: { totalAmount: -1 } },
+      { $limit: 5 },
+      {
+        $lookup: {
+          from: 'users',
+          let: { userId: '$_id' },
+          pipeline: [
+            { $match: { $expr: { $eq: ['$_id', '$$userId'] } } },
+            { $project: { password: 0 } }
+          ],
+          as: 'user'
+        }
+      },
+      { $unwind: '$user' }
+    ])
+    return topDonate
+  }
 }
 
 module.exports = new DonationService()

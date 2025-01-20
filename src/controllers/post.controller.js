@@ -1,82 +1,104 @@
-const sharp = require('sharp')
-const Post = require('../models/post.model.js')
-const User = require('../models/user.model.js')
-const Comment = require('../models/comment.model.js')
-const { getReceiverSocketId, io } = require('../socket/socket.js')
-const catchAsync = require('../utils/catchAsync.js')
-const { CREATED, OK } = require('../configs/response.config.js')
-const { POST_MESSAGE } = require('../constants/messages.js')
+const sharp = require('sharp');
+const Post = require('../models/post.model.js');
+const User = require('../models/user.model.js');
+const Comment = require('../models/comment.model.js');
+const { getReceiverSocketId, io } = require('../socket/socket.js');
+const catchAsync = require('../utils/catchAsync.js');
+const { CREATED, OK } = require('../configs/response.config.js');
+const { POST_MESSAGE } = require('../constants/messages.js');
 const { ObjectId } = require('mongoose').Types;
-const imgurService = require('../utils/imgur.js')
-
+const cloudinaryService = require('../utils/cloudinary.js');
 
 class PostController {
   addNewPost = catchAsync(async (req, res) => {
-    const { caption } = req.body
-    const imageFiles = req.files
-    console.log(imageFiles)
-    const authorId = req.id
+    const { caption } = req.body;
+    const mediaFiles = req.files;
+    const authorId = req.id;
 
-    if (!imageFiles || imageFiles.length === 0) {
+    if (!mediaFiles || mediaFiles.length === 0) {
       return res.status(400).json({
-        message: 'At least one image is required',
+        message: 'At least one media file (image or video) is required.',
         success: false,
       });
     }
 
     const imageUrls = [];
-    for (let i = 0; i < imageFiles.length; i++) {
-      const imageFile = imageFiles[i];
+    const videoUrls = [];
 
-      // Ensure the file has a buffer property
-      if (!imageFile.buffer) {
+    for (let i = 0; i < mediaFiles.length; i++) {
+      const mediaFile = mediaFiles[i];
+
+      // Ensure file has the required buffer property
+      if (!mediaFile.buffer) {
         return res.status(400).json({
-          message: `Invalid file format for image ${i + 1}`,
+          message: `Invalid file format for media ${i + 1}.`,
           success: false,
         });
       }
 
-      let optimizedImageBuffer;
+      const fileType = mediaFile.mimetype.split('/')[0];
+
       try {
-        optimizedImageBuffer = await sharp(imageFile.buffer)
-          .resize({ width: 800, height: 800, fit: 'inside' })
-          .toFormat('jpeg', { quality: 80 })
-          .toBuffer();
+        if (fileType === 'image') {
+          // Process and upload image
+          const optimizedImageBuffer = await sharp(mediaFile.buffer)
+            .resize({ width: 800, height: 800, fit: 'inside' })
+            .toFormat('jpeg', { quality: 80 })
+            .toBuffer();
+
+          const imageUrl = await cloudinaryService.uploadImage(optimizedImageBuffer);
+          if (!imageUrl) {
+            return res.status(500).json({
+              message: `Image ${i + 1} upload failed.`,
+              success: false,
+            });
+          }
+          imageUrls.push(imageUrl);
+        } else if (fileType === 'video') {
+          const videoUrl = await cloudinaryService.uploadVideo(mediaFile.buffer);
+          if (!videoUrl) {
+            return res.status(500).json({
+              message: `Video ${i + 1} upload failed.`,
+              success: false,
+            });
+          }
+          videoUrls.push(videoUrl);
+        } else {
+          return res.status(400).json({
+            message: `Unsupported media type for file ${i + 1}.`,
+            success: false,
+          });
+        }
       } catch (error) {
         return res.status(500).json({
-          message: `Error while processing image ${i + 1}`,
+          message: `Error while processing media ${i + 1}: ${error}`,
           success: false,
         });
       }
-
-      // Upload image to Imgur
-      const photoUrl = await imgurService.uploadImage(optimizedImageBuffer);
-
-      if (!photoUrl) {
-        return res.status(500).json({
-          message: `Image ${i + 1} upload failed`,
-          success: false,
-        });
-      }
-
-      // Add the photo URL to the list
-      imageUrls.push(photoUrl);
     }
+
+
+    // Create the post with the collected media URLs
     const post = await Post.create({
       caption,
       image: imageUrls,
+      video: videoUrls,
       author: new ObjectId(authorId),
-    })
-    const user = await User.findById(authorId)
+    });
+
+    // Update the user's post list
+    const user = await User.findById(authorId);
     if (user) {
-      user.posts.push(post._id)
-      await user.save()
+      user.posts.push(post._id);
+      await user.save();
     }
 
-    await post.populate({ path: 'author', select: '-password' })
+    // Populate author details in the response
+    await post.populate({ path: 'author', select: '-password' });
 
-    return CREATED(res, POST_MESSAGE.POST_CREATED_SUCCESSFULLY, post)
-  })
+    return CREATED(res, POST_MESSAGE.POST_CREATED_SUCCESSFULLY, post);
+  });
+
   getAllPost = catchAsync(async (req, res) => {
     const posts = await Post.find()
       .sort({ createdAt: -1 })
@@ -89,9 +111,9 @@ class PostController {
         options: { sort: { createdAt: -1 } },
         populate: {
           path: 'author',
-          select: 'username profilePicture isVerified',
-        },
-      });
+          select: 'username profilePicture isVerified'
+        }
+      })
     return OK(res, POST_MESSAGE.POST_FETCHED_SUCCESSFULLY, posts)
   })
 
@@ -202,7 +224,7 @@ class PostController {
 
       await comment.populate({
         path: 'author',
-        select: 'username profilePicture'
+        select: 'username profilePicture isVerified'
       })
 
       post.comments.push(comment._id)
@@ -302,4 +324,4 @@ class PostController {
     }
   }
 }
-module.exports = new PostController()
+module.exports = new PostController();

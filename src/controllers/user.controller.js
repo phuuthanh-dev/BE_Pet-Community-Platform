@@ -2,8 +2,8 @@ const User = require('../models/user.model.js')
 const { USER_MESSAGE } = require('../constants/messages.js')
 const catchAsync = require('../utils/catchAsync.js')
 const { getReceiverSocketId, io } = require('../socket/socket.js')
-const { OK, BAD_REQUEST } = require('../configs/response.config.js')
-const imgurService = require('../utils/imgur.js')
+const { OK } = require('../configs/response.config.js')
+const cloudinaryService = require('../utils/cloudinary.js')
 
 class UserController {
   getProfile = catchAsync(async (req, res) => {
@@ -13,11 +13,16 @@ class UserController {
   })
 
   editProfile = catchAsync(async (req, res) => {
-    const userId = req.id
     const { bio, gender, username, firstName, lastName } = req.body
-    const imageFile = req.file
+    const userId = req.id
+    const profilePicture = req.file
 
     const user = await User.findById(userId).select('-password')
+    let profilePictureUrl
+    if (profilePicture) {
+      profilePictureUrl = await cloudinaryService.uploadImage(profilePicture.buffer)
+      user.profilePicture = profilePictureUrl
+    }
     if (!user) {
       return res.status(404).json({
         message: USER_MESSAGE.USER_NOT_FOUND,
@@ -25,10 +30,6 @@ class UserController {
       })
     }
 
-    if (imageFile) {
-      const avatarLink = await imgurService.uploadImage(imageFile.buffer)
-      user.profilePicture = avatarLink
-    }
     if (bio) user.bio = bio
     if (gender) user.gender = gender
     if (username) {
