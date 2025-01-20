@@ -103,6 +103,8 @@ class AuthService {
     const user = {
       _id: isUserExists._id,
       username: isUserExists.username,
+      firstName: isUserExists.firstName,
+      lastName: isUserExists.lastName,
       email: isUserExists.email,
       profilePicture: isUserExists.profilePicture,
       bio: isUserExists.bio,

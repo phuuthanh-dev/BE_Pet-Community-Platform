@@ -6,6 +6,7 @@ const COMMON_MESSAGE = {
 
 const USER_MESSAGE = {
   USER_NOT_FOUND: 'User not found',
+  USERNAME_ALREADY_EXISTS: 'Username already exists',
   USER_ALREADY_EXISTS: 'User already exists',
   EMAIL_ALREADY_EXISTS: 'Email already exists',
   USER_CREATED_SUCCESSFULLY: 'User created successfully',

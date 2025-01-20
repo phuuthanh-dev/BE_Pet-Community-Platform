@@ -2,7 +2,7 @@ const User = require('../models/user.model.js')
 const { USER_MESSAGE } = require('../constants/messages.js')
 const catchAsync = require('../utils/catchAsync.js')
 const { getReceiverSocketId, io } = require('../socket/socket.js')
-const { OK } = require('../configs/response.config.js')
+const { OK, BAD_REQUEST } = require('../configs/response.config.js')
 const imgurService = require('../utils/imgur.js')
 
 class UserController {
@@ -14,7 +14,7 @@ class UserController {
 
   editProfile = catchAsync(async (req, res) => {
     const userId = req.id
-    const { bio, gender } = req.body
+    const { bio, gender, username, firstName, lastName } = req.body
     const imageFile = req.file
 
     const user = await User.findById(userId).select('-password')
@@ -31,6 +31,15 @@ class UserController {
     }
     if (bio) user.bio = bio
     if (gender) user.gender = gender
+    if (username) {
+      const isUsernameExists = await User.findOne({ username })
+      if (isUsernameExists && isUsernameExists._id.toString() !== userId) {
+        return BAD_REQUEST(res, USER_MESSAGE.USERNAME_ALREADY_EXISTS)
+      }
+      user.username = username
+    }
+    if (firstName) user.firstName = firstName
+    if (lastName) user.lastName = lastName
     await user.save()
     return OK(res, USER_MESSAGE.USER_PROFILE_UPDATED_SUCCESSFULLY, user)
   })

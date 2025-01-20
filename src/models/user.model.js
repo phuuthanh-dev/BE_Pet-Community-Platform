@@ -5,6 +5,8 @@ const { DEFAULT_AVATAR } = require('../constants/default.js')
 const userSchema = new mongoose.Schema(
     {
         username: { type: String, required: true, unique: true },
+        firstName: { type: String, default: '' },
+        lastName: { type: String, default: '' },
         name: { type: String },
         email: { type: String, required: true, unique: true },
         password: { type: String, required: true },
