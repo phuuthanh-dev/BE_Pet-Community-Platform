@@ -1,71 +1,100 @@
 const sharp = require('sharp')
-const cloudinary = require('../utils/cloudinary.js')
 const Post = require('../models/post.model.js')
 const User = require('../models/user.model.js')
 const Comment = require('../models/comment.model.js')
 const { getReceiverSocketId, io } = require('../socket/socket.js')
+const catchAsync = require('../utils/catchAsync.js')
+const { CREATED, OK } = require('../configs/response.config.js')
+const { POST_MESSAGE } = require('../constants/messages.js')
+const { ObjectId } = require('mongoose').Types;
+const imgurService = require('../utils/imgur.js')
+
 
 class PostController {
-  addNewPost = async (req, res) => {
-    try {
-      const { caption } = req.body
-      const image = req.file
-      const authorId = req.id
+  addNewPost = catchAsync(async (req, res) => {
+    const { caption } = req.body
+    const imageFiles = req.files
+    console.log(imageFiles)
+    const authorId = req.id
 
-      if (!image) return res.status(400).json({ message: 'Image required' })
+    if (!imageFiles || imageFiles.length === 0) {
+      return res.status(400).json({
+        message: 'At least one image is required',
+        success: false,
+      });
+    }
 
-      // image upload
-      const optimizedImageBuffer = await sharp(image.buffer)
-        .resize({ width: 800, height: 800, fit: 'inside' })
-        .toFormat('jpeg', { quality: 80 })
-        .toBuffer()
+    const imageUrls = [];
+    for (let i = 0; i < imageFiles.length; i++) {
+      const imageFile = imageFiles[i];
 
-      // buffer to data uri
-      const fileUri = `data:image/jpeg;base64,${optimizedImageBuffer.toString('base64')}`
-      const cloudResponse = await cloudinary.uploader.upload(fileUri)
-      const post = await Post.create({
-        caption,
-        image: cloudResponse.secure_url,
-        author: authorId
-      })
-      const user = await User.findById(authorId)
-      if (user) {
-        user.posts.push(post._id)
-        await user.save()
+      // Ensure the file has a buffer property
+      if (!imageFile.buffer) {
+        return res.status(400).json({
+          message: `Invalid file format for image ${i + 1}`,
+          success: false,
+        });
       }
 
-      await post.populate({ path: 'author', select: '-password' })
+      let optimizedImageBuffer;
+      try {
+        optimizedImageBuffer = await sharp(imageFile.buffer)
+          .resize({ width: 800, height: 800, fit: 'inside' })
+          .toFormat('jpeg', { quality: 80 })
+          .toBuffer();
+      } catch (error) {
+        return res.status(500).json({
+          message: `Error while processing image ${i + 1}`,
+          success: false,
+        });
+      }
 
-      return res.status(201).json({
-        message: 'New post added',
-        post,
-        success: true
-      })
-    } catch (error) {
-      console.log(error)
+      // Upload image to Imgur
+      const photoUrl = await imgurService.uploadImage(optimizedImageBuffer);
+
+      if (!photoUrl) {
+        return res.status(500).json({
+          message: `Image ${i + 1} upload failed`,
+          success: false,
+        });
+      }
+
+      // Add the photo URL to the list
+      imageUrls.push(photoUrl);
     }
-  }
-  getAllPost = async (req, res) => {
-    try {
-      const posts = await Post.find()
-        .sort({ createdAt: -1 })
-        .populate({ path: 'author', select: 'username profilePicture isVerified' })
-        .populate({
-          path: 'comments',
-          sort: { createdAt: -1 },
-          populate: {
-            path: 'author',
-            select: 'username profilePicture isVerified'
-          }
-        })
-      return res.status(200).json({
-        posts,
-        success: true
-      })
-    } catch (error) {
-      console.log(error)
+    const post = await Post.create({
+      caption,
+      image: imageUrls,
+      author: new ObjectId(authorId),
+    })
+    const user = await User.findById(authorId)
+    if (user) {
+      user.posts.push(post._id)
+      await user.save()
     }
-  }
+
+    await post.populate({ path: 'author', select: '-password' })
+
+    return CREATED(res, POST_MESSAGE.POST_CREATED_SUCCESSFULLY, post)
+  })
+  getAllPost = catchAsync(async (req, res) => {
+    const posts = await Post.find()
+      .sort({ createdAt: -1 })
+      .populate({
+        path: 'author',
+        select: 'username profilePicture isVerified'
+      })
+      .populate({
+        path: 'comments',
+        options: { sort: { createdAt: -1 } },
+        populate: {
+          path: 'author',
+          select: 'username profilePicture isVerified',
+        },
+      });
+    return OK(res, POST_MESSAGE.POST_FETCHED_SUCCESSFULLY, posts)
+  })
+
   getUserPost = async (req, res) => {
     try {
       const authorId = req.id
