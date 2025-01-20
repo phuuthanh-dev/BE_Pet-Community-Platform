@@ -13,30 +13,47 @@ class UserController {
   })
 
   editProfile = catchAsync(async (req, res) => {
+    const { bio, gender, username, firstName, lastName } = req.body
     const userId = req.id
-    const { bio, gender } = req.body
     const profilePicture = req.file
 
+    const user = await User.findById(userId).select('-password')
     let profilePictureUrl
     if (profilePicture) {
       profilePictureUrl = await cloudinaryService.uploadImage(profilePicture.buffer)
+      user.profilePicture = profilePictureUrl
+    }
+    if (!user) {
+      return res.status(404).json({
+        message: USER_MESSAGE.USER_NOT_FOUND,
+        success: false
+      })
     }
 
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      {
-        bio,
-        gender,
-        profilePicture: profilePictureUrl || undefined,
-      },
-      { new: true }
-    )
-
-    return OK(res, USER_MESSAGE.USER_PROFILE_UPDATED_SUCCESSFULLY, updatedUser)
+    if (bio) user.bio = bio
+    if (gender) user.gender = gender
+    if (username) {
+      const isUsernameExists = await User.findOne({ username })
+      if (isUsernameExists && isUsernameExists._id.toString() !== userId) {
+        return BAD_REQUEST(res, USER_MESSAGE.USERNAME_ALREADY_EXISTS)
+      }
+      user.username = username
+    }
+    if (firstName) user.firstName = firstName
+    if (lastName) user.lastName = lastName
+    await user.save()
+    return OK(res, USER_MESSAGE.USER_PROFILE_UPDATED_SUCCESSFULLY, user)
   })
 
   getSuggestedUsers = catchAsync(async (req, res) => {
-    const suggestedUsers = await User.find({ _id: { $ne: req.id } }).select('-password')
+    const userId = req.id
+    const user = await User.findById(userId)
+    const suggestedUsers = await User.find({
+      $and: [
+        { _id: { $ne: userId } },
+        { _id: { $nin: user.following } }
+      ]
+    }).select('-password')
     if (!suggestedUsers) {
       return res.status(400).json({
         message: 'Currently do not have any users'

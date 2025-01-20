@@ -6,6 +6,7 @@ const COMMON_MESSAGE = {
 
 const USER_MESSAGE = {
   USER_NOT_FOUND: 'User not found',
+  USERNAME_ALREADY_EXISTS: 'Username already exists',
   USER_ALREADY_EXISTS: 'User already exists',
   EMAIL_ALREADY_EXISTS: 'Email already exists',
   USER_CREATED_SUCCESSFULLY: 'User created successfully',
@@ -28,4 +29,17 @@ const POST_MESSAGE = {
   GET_ALL_POSTS_SUCCESSFULLY: 'Get all posts successfully',
   POST_FETCHED_SUCCESSFULLY: 'Post fetched successfully'
 }
-module.exports = { COMMON_MESSAGE, USER_MESSAGE, POST_MESSAGE }
+
+const CAMPAIGN_MESSAGE = {
+  CAMPAIGN_NOT_FOUND: 'Campaign not found',
+  CAMPAIGN_CREATED_SUCCESSFULLY: 'Campaign created successfully',
+  CAMPAIGN_UPDATED_SUCCESSFULLY: 'Campaign updated successfully',
+  CAMPAIGN_DELETED_SUCCESSFULLY: 'Campaign deleted successfully',
+  GET_CURRENT_CAMPAIGN_SUCCESSFULLY: 'Get current campaign successfully'
+}
+
+const DONATION_MESSAGE = {
+  DONATION_CREATED_SUCCESSFULLY: 'Donation created successfully'
+}
+
+module.exports = { COMMON_MESSAGE, USER_MESSAGE, POST_MESSAGE, CAMPAIGN_MESSAGE, DONATION_MESSAGE }

@@ -134,6 +134,8 @@ class PostController {
             select: 'username, profilePicture isVerified'
           }
         })
+      console.log(posts);
+      
       return res.status(200).json({
         posts,
         success: true
@@ -222,7 +224,7 @@ class PostController {
 
       await comment.populate({
         path: 'author',
-        select: 'username profilePicture'
+        select: 'username profilePicture isVerified'
       })
 
       post.comments.push(comment._id)

@@ -12,7 +12,6 @@ const postSchema = new mongoose.Schema({
   isApproved: { type: Boolean, default: false },
   isRejected: { type: Boolean, default: false },
   isHidden: { type: Boolean, default: false }
-},
-  { timestamps: true })
+}, { timestamps: true })
 const Post = mongoose.model('Post', postSchema)
 module.exports = Post
