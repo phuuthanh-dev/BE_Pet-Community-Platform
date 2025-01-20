@@ -3,7 +3,7 @@ const { USER_MESSAGE } = require('../constants/messages.js')
 const catchAsync = require('../utils/catchAsync.js')
 const { getReceiverSocketId, io } = require('../socket/socket.js')
 const { OK } = require('../configs/response.config.js')
-const imgurService = require('../utils/imgur.js')
+const cloudinaryService = require('../utils/cloudinary.js')
 
 class UserController {
   getProfile = catchAsync(async (req, res) => {
@@ -15,24 +15,24 @@ class UserController {
   editProfile = catchAsync(async (req, res) => {
     const userId = req.id
     const { bio, gender } = req.body
-    const imageFile = req.file
+    const profilePicture = req.file
 
-    const user = await User.findById(userId).select('-password')
-    if (!user) {
-      return res.status(404).json({
-        message: USER_MESSAGE.USER_NOT_FOUND,
-        success: false
-      })
+    let profilePictureUrl
+    if (profilePicture) {
+      profilePictureUrl = await cloudinaryService.uploadImage(profilePicture.buffer)
     }
 
-    if (imageFile) {
-      const avatarLink = await imgurService.uploadImage(imageFile.buffer)
-      user.profilePicture = avatarLink
-    }
-    if (bio) user.bio = bio
-    if (gender) user.gender = gender
-    await user.save()
-    return OK(res, USER_MESSAGE.USER_PROFILE_UPDATED_SUCCESSFULLY, user)
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      {
+        bio,
+        gender,
+        profilePicture: profilePictureUrl || undefined,
+      },
+      { new: true }
+    )
+
+    return OK(res, USER_MESSAGE.USER_PROFILE_UPDATED_SUCCESSFULLY, updatedUser)
   })
 
   getSuggestedUsers = catchAsync(async (req, res) => {

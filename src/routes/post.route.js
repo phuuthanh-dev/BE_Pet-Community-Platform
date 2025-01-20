@@ -18,7 +18,7 @@ const isAuthenticated = require('../middlewares/isAuthenticated.js')
 
 const router = express.Router()
 
-router.route('/addpost').post(isAuthenticated, upload.array('images'), addNewPost)
+router.route('/addpost').post(isAuthenticated, upload.array('media'), addNewPost)
 router.route('/all').get(isAuthenticated, getAllPost)
 router.route('/userpost/all').get(isAuthenticated, getUserPost)
 router.route('/:id/like').put(isAuthenticated, likePost)
