@@ -110,6 +110,7 @@ class AuthService {
       bio: isUserExists.bio,
       followers: isUserExists.followers,
       following: isUserExists.following,
+      posts: isUserExists.posts,
       bookmarks: isUserExists.bookmarks,
       isVerified: isUserExists.isVerified,
       isActive: isUserExists.isActive,
