@@ -1,5 +1,7 @@
 const express = require('express')
-const upload = require('../middlewares/multer.js')
+const multer = require('multer')
+const storage = multer.memoryStorage()
+const upload = multer({ storage: storage })
 const {
   addComment,
   addNewPost,
@@ -16,7 +18,7 @@ const isAuthenticated = require('../middlewares/isAuthenticated.js')
 
 const router = express.Router()
 
-router.route('/addpost').post(isAuthenticated, upload.single('image'), addNewPost)
+router.route('/addpost').post(isAuthenticated, upload.array('images'), addNewPost)
 router.route('/all').get(isAuthenticated, getAllPost)
 router.route('/userpost/all').get(isAuthenticated, getUserPost)
 router.route('/:id/like').put(isAuthenticated, likePost)
