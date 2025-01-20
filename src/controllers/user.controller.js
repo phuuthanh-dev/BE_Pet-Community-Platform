@@ -26,8 +26,8 @@ class UserController {
     }
 
     if (imageFile) {
-      const avatarLink = await imgurService.uploadImage(imageFile)
-      if (imageFile) user.profilePicture = avatarLink
+      const avatarLink = await imgurService.uploadImage(imageFile.buffer)
+      user.profilePicture = avatarLink
     }
     if (bio) user.bio = bio
     if (gender) user.gender = gender
@@ -45,7 +45,14 @@ class UserController {
   })
 
   getSuggestedUsers = catchAsync(async (req, res) => {
-    const suggestedUsers = await User.find({ _id: { $ne: req.id } }).select('-password')
+    const userId = req.id
+    const user = await User.findById(userId)
+    const suggestedUsers = await User.find({
+      $and: [
+        { _id: { $ne: userId } },
+        { _id: { $nin: user.following } }
+      ]
+    }).select('-password')
     if (!suggestedUsers) {
       return res.status(400).json({
         message: 'Currently do not have any users'

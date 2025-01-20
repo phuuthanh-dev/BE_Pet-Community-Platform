@@ -6,7 +6,7 @@ class ImgurService {
   uploadImage = async (imageFile) => {
     try {
       const res = await imgurClient.upload({
-        image: imageFile.buffer.toString('base64'),
+        image: imageFile.toString('base64'),
       })
       return res.data.link
     } catch (error) {
