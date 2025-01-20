@@ -4,11 +4,20 @@ const catchAsync = require('../utils/catchAsync.js')
 const { getReceiverSocketId, io } = require('../socket/socket.js')
 const { OK } = require('../configs/response.config.js')
 const cloudinaryService = require('../utils/cloudinary.js')
+const Message = require('../models/message.model.js')
 
 class UserController {
   getProfile = catchAsync(async (req, res) => {
+    const username = req.params.username
+    let user = await User.findOne({ username }).populate(['bookmarks', 'posts'])
+    user.posts.sort((a, b) => b.createdAt - a.createdAt);
+    return OK(res, USER_MESSAGE.USER_PROFILE_FETCHED_SUCCESSFULLY, user)
+  })
+
+  getProfileById = catchAsync(async (req, res) => {
     const userId = req.params.id
-    let user = await User.findById(userId).populate({ path: 'posts', createdAt: -1 }).populate('bookmarks')
+    let user = await User.findById(userId).populate(['bookmarks', 'posts'])
+    user.posts.sort((a, b) => b.createdAt - a.createdAt);
     return OK(res, USER_MESSAGE.USER_PROFILE_FETCHED_SUCCESSFULLY, user)
   })
 
@@ -107,6 +116,26 @@ class UserController {
       ])
       return OK(res, USER_MESSAGE.USER_FOLLOWED_SUCCESSFULLY)
     }
+  })
+
+  getChatUser = catchAsync(async (req, res) => {
+    const userId = req.id
+    const messages = await Message.find({
+      $or: [
+        { senderId: userId },
+        { receiverId: userId }
+      ]
+    }).select('senderId receiverId')
+
+    const userIds = messages.map(message => {
+      return message.senderId == userId ? message.receiverId : message.senderId
+    });
+
+    const uniqueUserIds = [...new Set(userIds)];
+
+    const chatUsers = await User.find({ _id: { $in: uniqueUserIds } }).select('-password');
+
+    return OK(res, USER_MESSAGE.USER_CHAT_USERS_FETCHED_SUCCESSFULLY, chatUsers);
   })
 }
 module.exports = new UserController()
