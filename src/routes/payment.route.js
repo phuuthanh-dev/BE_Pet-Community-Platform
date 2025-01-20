@@ -1,7 +1,7 @@
 const express = require('express')
 const {
-    createPaymentLink,
-    receiveHook
+  createPaymentLink,
+  receiveHook
 } = require('../controllers/payment.controller.js')
 
 const router = express.Router()
