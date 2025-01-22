@@ -17,4 +17,10 @@ const TokenType = {
   ForgotPasswordToken: 'forgot_password_token'
 }
 
-module.exports = { GENDER, ROLE, TokenType }
+const TRANSACTION_STATUS = {
+  PENDING: 'pending',
+  COMPLETED: 'completed',
+  CANCELLED: 'cancelled'
+}
+
+module.exports = { GENDER, ROLE, TokenType, TRANSACTION_STATUS }

@@ -6,6 +6,14 @@ const COMMON_MESSAGE = {
 
 const USER_MESSAGE = {
   USER_NOT_FOUND: 'User not found',
+  USER_BLOCKED_SUCCESSFULLY: 'User blocked',
+  USER_UNBLOCKED_SUCCESSFULLY: 'User unblocked',
+  USER_NOT_BLOCKED: 'User not blocked',
+  USER_NOT_UNBLOCKED: 'User not unblocked',
+  USER_NOT_FOLLOWED: 'User not followed',
+  USER_NOT_UNFOLLOWED: 'User not unfollowed',
+  USER_NOT_UPDATED: 'User not updated',
+  USER_SUGGESTED_USERS_FETCHED_SUCCESSFULLY: 'User suggested users fetched successfully',
   USER_CHAT_USERS_FETCHED_SUCCESSFULLY: 'User chat users fetched successfully',
   USERNAME_ALREADY_EXISTS: 'Username already exists',
   USER_ALREADY_EXISTS: 'User already exists',
@@ -47,4 +55,16 @@ const MESSAGE_MESSAGE = {
   MESSAGE_FETCHED_SUCCESSFULLY: 'Message fetched successfully'
 }
 
-module.exports = { COMMON_MESSAGE, USER_MESSAGE, POST_MESSAGE, CAMPAIGN_MESSAGE, DONATION_MESSAGE, MESSAGE_MESSAGE }
+const TRANSACTION_MESSAGE = {
+  TRANSACTION_NOT_FOUND: 'Transaction not found',
+  TRANSACTION_ALREADY_CANCELLED: 'Transaction already cancelled',
+  TRANSACTION_ALREADY_COMPLETED: 'Transaction already completed',
+  TRANSACTION_CANCEL_FAILED: 'Transaction cancel failed',
+  TRANSACTION_CREATED_SUCCESSFULLY: 'Transaction created successfully',
+  TRANSACTION_UPDATED_SUCCESSFULLY: 'Transaction updated successfully',
+  TRANSACTION_CANCELLED_SUCCESSFULLY: 'Transaction cancelled successfully',
+  GET_ALL_TRANSACTIONS_SUCCESSFULLY: 'Get all transactions successfully',
+  TRANSACTION_FETCHED_SUCCESSFULLY: 'Transaction fetched successfully'
+}
+
+module.exports = { COMMON_MESSAGE, USER_MESSAGE, POST_MESSAGE, CAMPAIGN_MESSAGE, DONATION_MESSAGE, MESSAGE_MESSAGE, TRANSACTION_MESSAGE }
