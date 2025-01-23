@@ -1,42 +1,43 @@
-const sharp = require('sharp');
-const Post = require('../models/post.model.js');
-const User = require('../models/user.model.js');
-const Comment = require('../models/comment.model.js');
-const { getReceiverSocketId, io } = require('../socket/socket.js');
-const catchAsync = require('../utils/catchAsync.js');
-const { CREATED, OK } = require('../configs/response.config.js');
-const { POST_MESSAGE } = require('../constants/messages.js');
-const { ObjectId } = require('mongoose').Types;
-const cloudinaryService = require('../utils/cloudinary.js');
+const sharp = require('sharp')
+const Post = require('../models/post.model.js')
+const User = require('../models/user.model.js')
+const Comment = require('../models/comment.model.js')
+const { getReceiverSocketId, io } = require('../socket/socket.js')
+const catchAsync = require('../utils/catchAsync.js')
+const { CREATED, OK } = require('../configs/response.config.js')
+const { POST_MESSAGE } = require('../constants/messages.js')
+const { ObjectId } = require('mongoose').Types
+const cloudinaryService = require('../utils/cloudinary.js')
+const postService = require('../services/post.service.js')
 
 class PostController {
   addNewPost = catchAsync(async (req, res) => {
-    const { caption } = req.body;
-    const mediaFiles = req.files;
-    const authorId = req.id;
+    const { caption } = req.body
+    const mediaFiles = req.files
+    const authorId = req.id
 
     if (!mediaFiles || mediaFiles.length === 0) {
       return res.status(400).json({
         message: 'At least one media file (image or video) is required.',
-        success: false,
-      });
+        success: false
+      })
     }
 
-    const imageUrls = [];
-    const videoUrls = [];
+    const imageUrls = []
+    const videoUrls = []
 
     for (let i = 0; i < mediaFiles.length; i++) {
-      const mediaFile = mediaFiles[i];
+      const mediaFile = mediaFiles[i]
 
       // Ensure file has the required buffer property
       if (!mediaFile.buffer) {
         return res.status(400).json({
           message: `Invalid file format for media ${i + 1}.`,
-          success: false,
-        });
+          success: false
+        })
       }
 
-      const fileType = mediaFile.mimetype.split('/')[0];
+      const fileType = mediaFile.mimetype.split('/')[0]
 
       try {
         if (fileType === 'image') {
@@ -44,36 +45,36 @@ class PostController {
           const optimizedImageBuffer = await sharp(mediaFile.buffer)
             .resize({ width: 800, height: 800, fit: 'inside' })
             .toFormat('jpeg', { quality: 80 })
-            .toBuffer();
+            .toBuffer()
 
-          const imageUrl = await cloudinaryService.uploadImage(optimizedImageBuffer);
+          const imageUrl = await cloudinaryService.uploadImage(optimizedImageBuffer)
           if (!imageUrl) {
             return res.status(500).json({
               message: `Image ${i + 1} upload failed.`,
-              success: false,
-            });
+              success: false
+            })
           }
-          imageUrls.push(imageUrl);
+          imageUrls.push(imageUrl)
         } else if (fileType === 'video') {
-          const videoUrl = await cloudinaryService.uploadVideo(mediaFile.buffer);
+          const videoUrl = await cloudinaryService.uploadVideo(mediaFile.buffer)
           if (!videoUrl) {
             return res.status(500).json({
               message: `Video ${i + 1} upload failed.`,
-              success: false,
-            });
+              success: false
+            })
           }
-          videoUrls.push(videoUrl);
+          videoUrls.push(videoUrl)
         } else {
           return res.status(400).json({
             message: `Unsupported media type for file ${i + 1}.`,
-            success: false,
-          });
+            success: false
+          })
         }
       } catch (error) {
         return res.status(500).json({
           message: `Error while processing media ${i + 1}: ${error}`,
-          success: false,
-        });
+          success: false
+        })
       }
     }
 
@@ -83,65 +84,33 @@ class PostController {
       caption,
       image: imageUrls,
       video: videoUrls,
-      author: new ObjectId(authorId),
-    });
+      author: new ObjectId(authorId)
+    })
 
     // Update the user's post list
-    const user = await User.findById(authorId);
+    const user = await User.findById(authorId)
     if (user) {
-      user.posts.push(post._id);
-      await user.save();
+      user.posts.push(post._id)
+      await user.save()
     }
 
     // Populate author details in the response
-    await post.populate({ path: 'author', select: '-password' });
+    await post.populate({ path: 'author', select: '-password' })
 
-    return CREATED(res, POST_MESSAGE.POST_CREATED_SUCCESSFULLY, post);
-  });
+    return CREATED(res, POST_MESSAGE.POST_CREATED_SUCCESSFULLY, post)
+  })
 
   getAllPost = catchAsync(async (req, res) => {
-    const posts = await Post.find()
-      .sort({ createdAt: -1 })
-      .populate({
-        path: 'author',
-        select: 'username profilePicture isVerified'
-      })
-      .populate({
-        path: 'comments',
-        options: { sort: { createdAt: -1 } },
-        populate: {
-          path: 'author',
-          select: 'username profilePicture isVerified'
-        }
-      })
+    const posts = await postService.getAllPost(req.query)
     return OK(res, POST_MESSAGE.POST_FETCHED_SUCCESSFULLY, posts)
   })
 
-  getUserPost = async (req, res) => {
-    try {
-      const authorId = req.id
-      const posts = await Post.find({ author: authorId })
-        .sort({ createdAt: -1 })
-        .populate({
-          path: 'author',
-          select: 'username, profilePicture isVerified'
-        })
-        .populate({
-          path: 'comments',
-          sort: { createdAt: -1 },
-          populate: {
-            path: 'author',
-            select: 'username, profilePicture isVerified'
-          }
-        })
-      return res.status(200).json({
-        posts,
-        success: true
-      })
-    } catch (error) {
-      console.log(error)
-    }
-  }
+  getUserPost = catchAsync(async (req, res) => {
+    const authorId = req.id
+    const posts = await postService.getUserPost(authorId)
+    return OK(res, POST_MESSAGE.POST_FETCHED_SUCCESSFULLY, posts)
+  })
+
   likePost = async (req, res) => {
     try {
       const likeKrneWalaUserKiId = req.id
@@ -322,4 +291,4 @@ class PostController {
     }
   }
 }
-module.exports = new PostController();
+module.exports = new PostController()

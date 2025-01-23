@@ -3,6 +3,7 @@ const { USER_MESSAGE } = require('../constants/messages.js')
 const ErrorWithStatus = require('../utils/errorWithStatus.js')
 const { StatusCodes } = require('http-status-codes')
 const Post = require('../models/post.model.js')
+const postRepo = require('../repositories/post.repo.js')
 
 class PostService {
 
@@ -38,7 +39,37 @@ class PostService {
     }
   }
 
+  getAllPost = async (query) => {
+    const { sortBy, limit, page, q } = query
+    const filter = { isHidden: false }
+    const options = {
+      sortBy: sortBy || 'createdAt',
+      limit: limit ? parseInt(limit) : 5,
+      page: page ? parseInt(page) : 1,
+      allowSearchFields: ['caption'],
+      q: q ?? '',
+      populate: 'author,comments,comments.author'
+    }
 
+    return await postRepo.getAll(filter, options)
+  }
+
+  getUserPost = async (userId) => {
+    return await Post.find({ author: userId })
+      .sort({ createdAt: -1 })
+      .populate({
+        path: 'author',
+        select: 'username, profilePicture isVerified'
+      })
+      .populate({
+        path: 'comments',
+        sort: { createdAt: -1 },
+        populate: {
+          path: 'author',
+          select: 'username, profilePicture isVerified'
+        }
+      })
+  }
 }
 
 const postService = new PostService()

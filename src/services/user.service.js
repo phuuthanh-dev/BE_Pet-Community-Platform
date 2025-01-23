@@ -45,15 +45,24 @@ class UserService {
     return user
   }
 
-  getSuggestedUsers = async (userId) => {
+  getSuggestedUsers = async (userId, query) => {
+    const { sortBy, limit, page, q } = query
     const user = await User.findById(userId)
-    const suggestedUsers = await User.find({
-      $and: [
-        { _id: { $ne: userId } },
-        { _id: { $nin: user.following } }
-      ]
-    }).select('-password')
-    return suggestedUsers
+    const filter = {
+      isActive: true,
+      _id: { $ne: userId, $nin: user.following }
+    }
+
+    const options = {
+      sortBy: sortBy || 'createdAt',
+      limit: limit ? parseInt(limit) : 5,
+      page: page ? parseInt(page) : 1,
+      allowSearchFields: ['username'],
+      q: q ?? '',
+      fields: '-password'
+    }
+
+    return await User.paginate(filter, options)
   }
 
   followOrUnfollow = async (followerId, followingId) => {
@@ -128,6 +137,7 @@ class UserService {
       const lastMessage = latestMessagesMap.get(user._id.toString())
       return {
         ...user.toObject(),
+        id: user._id,
         lastMessage: lastMessage
           ? {
             content: lastMessage.message,
@@ -137,6 +147,7 @@ class UserService {
           : null
       }
     })
+      .sort((a, b) => b.lastMessage.time - a.lastMessage.time)
   }
 }
 
