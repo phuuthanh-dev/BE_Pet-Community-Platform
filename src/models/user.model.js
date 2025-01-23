@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema(
     lastName: { type: String, default: '' },
     name: { type: String },
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
+    password: { type: String, required: true, private: true },
     profilePicture: { type: String, default: DEFAULT_AVATAR },
     bio: { type: String, default: '' },
     gender: { type: String, enum: Object.values(GENDER), default: GENDER.MALE },
@@ -28,5 +28,7 @@ const userSchema = new mongoose.Schema(
   },
   { timestamps: true }
 )
+userSchema.plugin(require('./plugins/paginate.plugin'))
+userSchema.plugin(require('./plugins/toJSON.plugin'))
 const User = mongoose.model('User', userSchema)
 module.exports = User

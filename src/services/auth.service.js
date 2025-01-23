@@ -87,7 +87,7 @@ class AuthService {
   }
 
   login = async ({ email, password }) => {
-    const isUserExists = await this.user.findOne({ email }).select('-createdAt -updatedAt -__v -isBlocked')
+    const isUserExists = await User.findOne({ email }).select('-createdAt -updatedAt -__v -isBlocked')
     if (!isUserExists) {
       throw new ErrorWithStatus({ status: StatusCodes.BAD_REQUEST, message: USER_MESSAGE.USER_NOT_FOUND })
     }
@@ -100,28 +100,10 @@ class AuthService {
       user_id: isUserExists._id.toString()
     })
 
-    const user = {
-      _id: isUserExists._id,
-      username: isUserExists.username,
-      firstName: isUserExists.firstName,
-      lastName: isUserExists.lastName,
-      email: isUserExists.email,
-      profilePicture: isUserExists.profilePicture,
-      bio: isUserExists.bio,
-      followers: isUserExists.followers,
-      following: isUserExists.following,
-      posts: isUserExists.posts,
-      bookmarks: isUserExists.bookmarks,
-      isVerified: isUserExists.isVerified,
-      isActive: isUserExists.isActive,
-      gender: isUserExists.gender,
-      role: isUserExists.role
-    }
-
     return {
       access_token,
       refresh_token,
-      user
+      user: isUserExists
     }
   }
 

@@ -13,5 +13,9 @@ const postSchema = new mongoose.Schema({
   isRejected: { type: Boolean, default: false },
   isHidden: { type: Boolean, default: false }
 }, { timestamps: true })
+
+
+postSchema.plugin(require('./plugins/paginate.plugin'))
+
 const Post = mongoose.model('Post', postSchema)
 module.exports = Post

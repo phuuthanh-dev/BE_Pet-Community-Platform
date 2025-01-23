@@ -8,12 +8,8 @@ class AuthController {
   register = catchAsync(async (req, res) => {
     const { username, email, password } = req.body
     if (!username || !email || !password) {
-
-
       throw new ErrorWithStatus({ status: StatusCodes.BAD_REQUEST, message: COMMON_MESSAGE.SOMETHING_IS_MISSING })
     }
-
-
     const result = await authService.register(req.body)
     return CREATED(res, USER_MESSAGE.USER_CREATED_SUCCESSFULLY, result)
   })

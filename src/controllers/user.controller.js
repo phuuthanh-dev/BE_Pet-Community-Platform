@@ -20,7 +20,7 @@ class UserController {
   })
 
   getSuggestedUsers = catchAsync(async (req, res) => {
-    const users = await userService.getSuggestedUsers(req.id)
+    const users = await userService.getSuggestedUsers(req.id, req.query)
     return OK(res, USER_MESSAGE.USER_SUGGESTED_USERS_FETCHED_SUCCESSFULLY, users)
   })
 
