@@ -23,7 +23,7 @@ class DonationService {
 
     const campaign = await Campaign.findById(donation.campaign)
     if (!campaign) {
-      throw new ErrorWithStatus({ 
+      throw new ErrorWithStatus({
         status: StatusCodes.NOT_FOUND,
         message: CAMPAIGN_MESSAGE.CAMPAIGN_NOT_FOUND
       })
