@@ -101,19 +101,42 @@ class UserService {
   }
 
   getChatUsers = async (userId) => {
+    // Lấy tất cả message với người khác của user
     const messages = await Message.find({
-      $or: [
-        { senderId: userId },
-        { receiverId: userId }
-      ]
-    }).select('senderId receiverId')
+      $or: [{ senderId: userId }, { receiverId: userId }]
+    }).sort({ createdAt: -1 })
 
-    const userIds = messages.map(message =>
-      message.senderId == userId ? message.receiverId : message.senderId
-    )
+    // Lấy ra tin nhắn cuối cùng của mỗi người
+    const latestMessagesMap = new Map()
+    for (const message of messages) {
+      const chatPartnerId = message.senderId.equals(userId)
+        ? message.receiverId.toString()
+        : message.senderId.toString()
+      if (!latestMessagesMap.has(chatPartnerId)) {
+        latestMessagesMap.set(chatPartnerId, message)
+      }
+    }
+    // Lấy ra id của những người đã chat với user
+    const userIds = [...latestMessagesMap.keys()]
+    // Lấy thông tin user của những người đã chat với user
+    const users = await User.find({ _id: { $in: userIds } }).select('-password')
 
-    const uniqueUserIds = [...new Set(userIds)]
-    return User.find({ _id: { $in: uniqueUserIds } }).select('-password')
+    // Thêm tin nhắn cuối cùng vào thông tin user
+    return users.map(user => {
+
+      // Lấy tin nhắn cuối cùng
+      const lastMessage = latestMessagesMap.get(user._id.toString())
+      return {
+        ...user.toObject(),
+        lastMessage: lastMessage
+          ? {
+            content: lastMessage.message,
+            from: lastMessage.senderId.toString(),
+            time: lastMessage.createdAt
+          }
+          : null
+      }
+    })
   }
 }
 
