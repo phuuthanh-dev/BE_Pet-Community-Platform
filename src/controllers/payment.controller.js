@@ -61,10 +61,9 @@ class PaymentController {
   })
 
   receiveHook = catchAsync(async (req, res) => {
-    const { code, desc, data } = req.body
-
-    if (code === '00' && desc === 'success') {
-      await donationService.updateDonationStatus(data.orderCode, data)
+    const webhookData = payos.verifyPaymentWebhookData(req.body)
+    if (webhookData.code === '00' && webhookData.desc === 'success') {
+      await donationService.updateDonationStatus(webhookData.orderCode, webhookData)
     }
     res.json({ message: 'Webhook processed successfully' })
   })
