@@ -1,5 +1,3 @@
-
-
 const toRegex = require('../../utils/toRegex')
 
 const paginate = (schema) => {

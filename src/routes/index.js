@@ -7,6 +7,7 @@ const authRoute = require('./auth.route')
 const paymentRoute = require('./payment.route')
 const campaignRoute = require('./campaign.route')
 const donationRoute = require('./donation.route')
+const notificationRoute = require('./notification.route')
 
 const routes = [
     {
@@ -36,6 +37,10 @@ const routes = [
     {
         path: '/donation',
         route: donationRoute
+    },
+    {
+        path: '/notification',
+        route: notificationRoute
     }
 ]
 

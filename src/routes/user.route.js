@@ -6,7 +6,8 @@ const {
   getProfile,
   getSuggestedUsers,
   getProfileById,
-  getChatUser
+  getChatUser,
+  getAllUser
 } = require('../controllers/user.controller.js');
 const isAuthenticated = require('../middlewares/isAuthenticated.js');
 
@@ -20,5 +21,6 @@ router.route('/profile/edit').post(isAuthenticated, upload.single('profilePictur
 router.route('/suggested').get(isAuthenticated, getSuggestedUsers);
 router.route('/followorunfollow/:id').post(isAuthenticated, followOrUnfollow)
 router.route('/chat-users').get(isAuthenticated, getChatUser)
+router.route('/all').get(isAuthenticated, getAllUser)
 
 module.exports = router;

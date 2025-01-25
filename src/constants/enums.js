@@ -3,6 +3,12 @@ const GENDER = {
   FEMALE: 'female'
 }
 
+const NOTIFICAITON_TYPE = {
+  FOLLOW: 'follow',
+  LIKE: 'like',
+  COMMENT: 'comment'
+}
+
 const ROLE = {
   USER: 'user',
   ADMIN: 'admin',
@@ -23,4 +29,4 @@ const TRANSACTION_STATUS = {
   CANCELLED: 'cancelled'
 }
 
-module.exports = { GENDER, ROLE, TokenType, TRANSACTION_STATUS }
+module.exports = { GENDER, NOTIFICAITON_TYPE, ROLE, TokenType, TRANSACTION_STATUS }

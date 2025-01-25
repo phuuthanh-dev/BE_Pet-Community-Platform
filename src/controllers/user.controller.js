@@ -36,5 +36,10 @@ class UserController {
     const users = await userService.getChatUsers(req.id)
     return OK(res, USER_MESSAGE.USER_CHAT_USERS_FETCHED_SUCCESSFULLY, users)
   })
+
+  getAllUser = catchAsync(async (req, res) => {
+    const users = await userService.getAllUser(req.query, req.id)
+    return OK(res, USER_MESSAGE.USER_CHAT_USERS_FETCHED_SUCCESSFULLY, users)
+  })
 }
 module.exports = new UserController()
