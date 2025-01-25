@@ -149,6 +149,21 @@ class UserService {
     })
       .sort((a, b) => b.lastMessage.time - a.lastMessage.time)
   }
+
+  getAllUser = async (query, userId) => {
+    const { q, page, limit, sortBy } = query
+    const filter = { isActive: true, _id: { $ne: userId } }
+    const options = {
+      sortBy: sortBy || 'createdAt',
+      limit: limit ? parseInt(limit) : 5,
+      page: page ? parseInt(page) : 1,
+      allowSearchFields: ['username'],
+      q: q ?? '',
+      fields: '-password'
+    }
+
+    return await User.paginate(filter, options)
+  }
 }
 
 module.exports = new UserService()

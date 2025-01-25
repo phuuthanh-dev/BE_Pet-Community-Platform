@@ -9,6 +9,8 @@ const { POST_MESSAGE } = require('../constants/messages.js')
 const { ObjectId } = require('mongoose').Types
 const cloudinaryService = require('../utils/cloudinary.js')
 const postService = require('../services/post.service.js')
+const Notification = require('../models/notification.model.js')
+const { NOTIFICAITON_TYPE } = require('../constants/enums.js')
 
 class PostController {
   addNewPost = catchAsync(async (req, res) => {
@@ -128,15 +130,19 @@ class PostController {
       const postOwnerId = post.author.toString()
       if (postOwnerId !== likeKrneWalaUserKiId) {
         // emit a notification event
-        const notification = {
-          type: 'like',
-          userId: likeKrneWalaUserKiId,
-          userDetails: user,
-          postId,
-          message: 'Your post was liked'
-        }
+        const notification = await Notification.create({
+          type: NOTIFICAITON_TYPE.LIKE,
+          sender: likeKrneWalaUserKiId,
+          recipient: post.author,
+          post: postId,
+          message: 'đã thích ảnh của bạn',
+          read: false
+        })
         const postOwnerSocketId = getReceiverSocketId(postOwnerId)
-        io.to(postOwnerSocketId).emit('notification', notification)
+        io.to(postOwnerSocketId).emit('notification', {
+          ...notification,
+          sender: user
+        })
       }
 
       return res.status(200).json({ message: 'Post liked', success: true })
