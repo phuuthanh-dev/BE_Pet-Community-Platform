@@ -15,6 +15,7 @@ const USER_MESSAGE = {
   USER_NOT_UPDATED: 'User not updated',
   USER_SUGGESTED_USERS_FETCHED_SUCCESSFULLY: 'User suggested users fetched successfully',
   USER_CHAT_USERS_FETCHED_SUCCESSFULLY: 'User chat users fetched successfully',
+  USERS_FETCHED_SUCCESSFULLY: 'Users fetched successfully',
   USERNAME_ALREADY_EXISTS: 'Username already exists',
   USER_ALREADY_EXISTS: 'User already exists',
   EMAIL_ALREADY_EXISTS: 'Email already exists',
@@ -36,6 +37,7 @@ const POST_MESSAGE = {
   POST_UPDATED_SUCCESSFULLY: 'Post updated successfully',
   POST_DELETED_SUCCESSFULLY: 'Post deleted successfully',
   GET_ALL_POSTS_SUCCESSFULLY: 'Get all posts successfully',
+  GET_POST_SUCCESSFULLY: 'Get post successfully',
   POST_FETCHED_SUCCESSFULLY: 'Post fetched successfully'
 }
 
