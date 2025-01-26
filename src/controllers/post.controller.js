@@ -255,24 +255,10 @@ class PostController {
       console.log(error)
     }
   }
-  getPostById = async (req, res) => {
-    try {
-      const postId = req.params.id
-      const post = await Post.findById(postId)
-        .populate('author', 'username profilePicture isVerified')
-        .populate({
-          path: 'comments',
-          sort: { createdAt: -1 },
-          populate: {
-            path: 'author',
-            select: 'username profilePicture isVerified'
-          }
-        })
-      return res.status(200).json({ post, success: true })
-    } catch (error) {
-      console.log(error)
-    }
-  }
+  getPostById = catchAsync(async (req, res) => {
+    const post = await postService.getPostById(req.params.id)
+    return OK(res, POST_MESSAGE.GET_POST_SUCCESSFULLY, post)
+  })
   bookmarkPost = async (req, res) => {
     try {
       const postId = req.params.id
