@@ -26,9 +26,8 @@ class UserController {
 
   followOrUnfollow = catchAsync(async (req, res) => {
     const result = await userService.followOrUnfollow(req.id, req.params.id)
-    const message = result.action === 'follow' ?
-      USER_MESSAGE.USER_FOLLOWED_SUCCESSFULLY :
-      USER_MESSAGE.USER_UNFOLLOWED_SUCCESSFULLY
+    const message =
+      result.action === 'follow' ? USER_MESSAGE.USER_FOLLOWED_SUCCESSFULLY : USER_MESSAGE.USER_UNFOLLOWED_SUCCESSFULLY
     return OK(res, message)
   })
 

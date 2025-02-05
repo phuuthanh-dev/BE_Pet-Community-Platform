@@ -12,7 +12,11 @@ class AuthService {
       userId: user_id,
       type: TokenType.AccessToken
     }
-    return generateToken(payload, process.env.JWT_SECRET_ACCESS_TOKEN_KEY, parseInt(process.env.ACCESS_TOKEN_EXPIRES_IN) || '24h')
+    return generateToken(
+      payload,
+      process.env.JWT_SECRET_ACCESS_TOKEN_KEY,
+      parseInt(process.env.ACCESS_TOKEN_EXPIRES_IN) || '24h'
+    )
   }
 
   signRefreshToken = async ({ user_id }) => {
@@ -20,7 +24,11 @@ class AuthService {
       userId: user_id,
       type: TokenType.RefreshToken
     }
-    return generateToken(payload, process.env.JWT_SECRET_REFRESH_TOKEN_KEY, parseInt(process.env.REFRESH_TOKEN_EXPIRES_IN) || '7d')
+    return generateToken(
+      payload,
+      process.env.JWT_SECRET_REFRESH_TOKEN_KEY,
+      parseInt(process.env.REFRESH_TOKEN_EXPIRES_IN) || '7d'
+    )
   }
 
   signEmailVerifyToken = async ({ user_id }) => {
@@ -28,7 +36,11 @@ class AuthService {
       userId: user_id,
       type: TokenType.EmailVerifyToken
     }
-    return generateToken(payload, process.env.JWT_SECRET_EMAIL_VERIFY_TOKEN_KEY, parseInt(process.env.EMAIL_VERIFY_TOKEN_EXPIRES_IN) || '1h')
+    return generateToken(
+      payload,
+      process.env.JWT_SECRET_EMAIL_VERIFY_TOKEN_KEY,
+      parseInt(process.env.EMAIL_VERIFY_TOKEN_EXPIRES_IN) || '1h'
+    )
   }
 
   signForgotPasswordToken = async ({ user_id }) => {
@@ -36,7 +48,11 @@ class AuthService {
       userId: user_id,
       type: TokenType.ForgotPasswordToken
     }
-    return generateToken(payload, process.env.JWT_SECRET_FORGOT_PASSWORD_TOKEN_KEY, parseInt(process.env.FORGOT_PASSWORD_TOKEN_EXPIRES_IN) || '1h')
+    return generateToken(
+      payload,
+      process.env.JWT_SECRET_FORGOT_PASSWORD_TOKEN_KEY,
+      parseInt(process.env.FORGOT_PASSWORD_TOKEN_EXPIRES_IN) || '1h'
+    )
   }
 
   signAccessAndRefreshToken = async ({ user_id }) => {
@@ -81,7 +97,11 @@ class AuthService {
 
   refreshToken = async (refreshToken) => {
     const decoded = await verifyToken(refreshToken, process.env.JWT_SECRET_REFRESH_TOKEN_KEY)
-    const accessToken = await generateToken({ userId: decoded.userId }, process.env.JWT_SECRET_ACCESS_TOKEN_KEY, parseInt(process.env.ACCESS_TOKEN_EXPIRES_IN) || '24h')
+    const accessToken = await generateToken(
+      { userId: decoded.userId },
+      process.env.JWT_SECRET_ACCESS_TOKEN_KEY,
+      parseInt(process.env.ACCESS_TOKEN_EXPIRES_IN) || '24h'
+    )
 
     return accessToken
   }

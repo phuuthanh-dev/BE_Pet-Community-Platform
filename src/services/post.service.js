@@ -6,7 +6,6 @@ const Post = require('../models/post.model.js')
 const postRepo = require('../repositories/post.repo.js')
 
 class PostService {
-
   constructor() {
     this.post = Post
   }

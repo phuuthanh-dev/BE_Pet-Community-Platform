@@ -80,7 +80,6 @@ class PostController {
       }
     }
 
-
     // Create the post with the collected media URLs
     const post = await Post.create({
       caption,
@@ -146,7 +145,7 @@ class PostController {
       }
 
       return res.status(200).json({ message: 'Post liked', success: true })
-    } catch (error) { }
+    } catch (error) {}
   }
   dislikePost = async (req, res) => {
     try {
@@ -176,7 +175,7 @@ class PostController {
       }
 
       return res.status(200).json({ message: 'Post disliked', success: true })
-    } catch (error) { }
+    } catch (error) {}
   }
   addComment = async (req, res) => {
     try {
