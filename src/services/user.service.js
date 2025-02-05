@@ -73,10 +73,7 @@ class UserService {
       })
     }
 
-    const [user, targetUser] = await Promise.all([
-      User.findById(followerId),
-      User.findById(followingId)
-    ])
+    const [user, targetUser] = await Promise.all([User.findById(followerId), User.findById(followingId)])
 
     if (!user || !targetUser) {
       throw new ErrorWithStatus({
@@ -131,22 +128,22 @@ class UserService {
     const users = await User.find({ _id: { $in: userIds } }).select('-password')
 
     // Thêm tin nhắn cuối cùng vào thông tin user
-    return users.map(user => {
-
-      // Lấy tin nhắn cuối cùng
-      const lastMessage = latestMessagesMap.get(user._id.toString())
-      return {
-        ...user.toObject(),
-        id: user._id,
-        lastMessage: lastMessage
-          ? {
-            content: lastMessage.message,
-            from: lastMessage.senderId.toString(),
-            time: lastMessage.createdAt
-          }
-          : null
-      }
-    })
+    return users
+      .map((user) => {
+        // Lấy tin nhắn cuối cùng
+        const lastMessage = latestMessagesMap.get(user._id.toString())
+        return {
+          ...user.toObject(),
+          id: user._id,
+          lastMessage: lastMessage
+            ? {
+                content: lastMessage.message,
+                from: lastMessage.senderId.toString(),
+                time: lastMessage.createdAt
+              }
+            : null
+        }
+      })
       .sort((a, b) => b.lastMessage.time - a.lastMessage.time)
   }
 
