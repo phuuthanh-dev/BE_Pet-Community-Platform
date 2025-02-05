@@ -1,3 +1,4 @@
+
 module.exports = {
   env: {
     es6: true,
@@ -31,7 +32,7 @@ module.exports = {
   },
   overrides: [
     {
-      files: ['**/*.spec.*'],
+      files: ['*/.spec.*'],
       env: {
         mocha: true
       },
