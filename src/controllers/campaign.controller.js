@@ -7,8 +7,16 @@ class CampaignController {
   createCampaign = catchAsync(async (req, res) => {
     const user = req.id
     const { title, description, startDate, endDate, targetAmount, image } = req.body
-    
-    const campaign = await campaignService.createCampaign(title, description, startDate, endDate, targetAmount, image, user)
+
+    const campaign = await campaignService.createCampaign(
+      title,
+      description,
+      startDate,
+      endDate,
+      targetAmount,
+      image,
+      user
+    )
     return CREATED(res, CAMPAIGN_MESSAGE.CAMPAIGN_CREATED_SUCCESSFULLY, campaign)
   })
   currentCampaign = catchAsync(async (req, res) => {
