@@ -48,6 +48,7 @@ class BlogController {
         return OK(res, BLOG_MESSAGE.BLOG_FETCHED_SUCCESSFULLY, blogs)
     });
 
+
     // Lấy blog theo ID
     getBlogById = catchAsync(async (req, res) => {
         const blog = await Blog.findById(req.params.id)
