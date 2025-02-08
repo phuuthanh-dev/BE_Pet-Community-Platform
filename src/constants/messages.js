@@ -41,6 +41,16 @@ const POST_MESSAGE = {
   POST_FETCHED_SUCCESSFULLY: 'Post fetched successfully'
 }
 
+const ADOPTION_POST_MESSAGE = {
+  NOT_FOUND: 'Adoption post not found',
+  CREATED_SUCCESS: 'Adoption post created successfully',
+  UPDATED_SUCCESS: 'Adoption post updated successfully',
+  DELETED_SUCCESS: 'Adoption post deleted successfully',
+  FETCH_ALL_SUCCESS: 'Successfully retrieved all adoption posts',
+  FETCH_SUCCESS: 'Successfully retrieved adoption post'
+};
+
+
 const CAMPAIGN_MESSAGE = {
   CAMPAIGN_NOT_FOUND: 'Campaign not found',
   CAMPAIGN_CREATED_SUCCESSFULLY: 'Campaign created successfully',
@@ -78,6 +88,7 @@ module.exports = {
   COMMON_MESSAGE,
   USER_MESSAGE,
   POST_MESSAGE,
+  ADOPTION_POST_MESSAGE,
   CAMPAIGN_MESSAGE,
   DONATION_MESSAGE,
   MESSAGE_MESSAGE,
