@@ -1,6 +1,12 @@
 const Blog = require('../models/blog.model')
 const catchAsync = require('../utils/catchAsync')
 const cloudinaryService = require('../utils/cloudinary')
+const blogRepo = require('../repositories/blog.repo.js')
+const { OK } = require('../configs/response.config.js')
+const { BLOG_MESSAGE } = require('../constants/messages.js')
+const blogService = require('../services/blog.service.js')
+
+
 
 class BlogController {
     // Tạo blog mới
@@ -38,28 +44,8 @@ class BlogController {
 
     // Lấy tất cả blogs
     getAllBlogs = catchAsync(async (req, res) => {
-        const { category, page = 1, limit = 10 } = req.query;
-        const filter = category ? { category } : {};
-        console.log('Filter:', filter);
-        try {
-            const blogs = await Blog.paginate(filter, {
-                page,
-                limit,
-                sort: { createdAt: -1 },
-                populate: 'author'
-            });
-            console.log('Blogs:', blogs); 
-            return res.status(200).json({
-                success: true,
-                data: blogs
-            });
-        } catch (error) {
-            console.error('Error fetching blogs:', error); 
-            return res.status(500).json({
-                success: false,
-                message: 'Internal Server Error'
-            });
-        }
+        const blogs = await blogService.getAllBlog(req.query)
+        return OK(res, BLOG_MESSAGE.BLOG_FETCHED_SUCCESSFULLY, blogs)
     });
 
     // Lấy blog theo ID
