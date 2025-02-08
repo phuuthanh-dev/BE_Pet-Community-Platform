@@ -44,14 +44,23 @@ class PaymentController {
       throw new ErrorWithStatus({ status: StatusCodes.NOT_FOUND, message: TRANSACTION_MESSAGE.TRANSACTION_NOT_FOUND })
     }
     if (donation.status === TRANSACTION_STATUS.CANCELLED) {
-      throw new ErrorWithStatus({ status: StatusCodes.BAD_REQUEST, message: TRANSACTION_MESSAGE.TRANSACTION_ALREADY_CANCELLED })
+      throw new ErrorWithStatus({
+        status: StatusCodes.BAD_REQUEST,
+        message: TRANSACTION_MESSAGE.TRANSACTION_ALREADY_CANCELLED
+      })
     }
     if (donation.status === TRANSACTION_STATUS.COMPLETED) {
-      throw new ErrorWithStatus({ status: StatusCodes.BAD_REQUEST, message: TRANSACTION_MESSAGE.TRANSACTION_ALREADY_COMPLETED })
+      throw new ErrorWithStatus({
+        status: StatusCodes.BAD_REQUEST,
+        message: TRANSACTION_MESSAGE.TRANSACTION_ALREADY_COMPLETED
+      })
     }
     const cancelPaymentLink = await payos.cancelPaymentLink(orderCode, 'User cancel payment')
     if (!cancelPaymentLink) {
-      throw new ErrorWithStatus({ status: StatusCodes.BAD_REQUEST, message: TRANSACTION_MESSAGE.TRANSACTION_CANCEL_FAILED })
+      throw new ErrorWithStatus({
+        status: StatusCodes.BAD_REQUEST,
+        message: TRANSACTION_MESSAGE.TRANSACTION_CANCEL_FAILED
+      })
     }
     if (cancelPaymentLink.status === 'CANCELLED') {
       donation.status = TRANSACTION_STATUS.CANCELLED

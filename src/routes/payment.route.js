@@ -1,9 +1,5 @@
 const express = require('express')
-const {
-  createPaymentLinkMember,
-  receiveHook,
-  cancelPayment
-} = require('../controllers/payment.controller.js')
+const { createPaymentLinkMember, receiveHook, cancelPayment } = require('../controllers/payment.controller.js')
 const isAuthenticated = require('../middlewares/isAuthenticated.js')
 
 const router = express.Router()

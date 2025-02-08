@@ -64,10 +64,7 @@ class DonationService {
         $lookup: {
           from: 'users',
           let: { userId: '$_id' },
-          pipeline: [
-            { $match: { $expr: { $eq: ['$_id', '$$userId'] } } },
-            { $project: { password: 0 } }
-          ],
+          pipeline: [{ $match: { $expr: { $eq: ['$_id', '$$userId'] } } }, { $project: { password: 0 } }],
           as: 'user'
         }
       },
