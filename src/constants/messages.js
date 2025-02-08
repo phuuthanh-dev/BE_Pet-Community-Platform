@@ -41,6 +41,17 @@ const POST_MESSAGE = {
   POST_FETCHED_SUCCESSFULLY: 'Post fetched successfully'
 }
 
+const BLOG_MESSAGE = {
+  BLOG_NOT_FOUND: 'Blog not found',
+  BLOG_CREATED_SUCCESSFULLY: 'Blog created successfully',
+  BLOG_UPDATED_SUCCESSFULLY: 'Blog updated successfully',
+  BLOG_DELETED_SUCCESSFULLY: 'Blog deleted successfully',
+  GET_ALL_BLOGS_SUCCESSFULLY: 'Get all blogs successfully',
+  GET_BLOG_SUCCESSFULLY: 'Get blog successfully',
+  BLOG_FETCHED_SUCCESSFULLY: 'Blog fetched successfully'
+};
+
+
 const ADOPTION_POST_MESSAGE = {
   NOT_FOUND: 'Adoption post not found',
   CREATED_SUCCESS: 'Adoption post created successfully',
@@ -92,5 +103,6 @@ module.exports = {
   CAMPAIGN_MESSAGE,
   DONATION_MESSAGE,
   MESSAGE_MESSAGE,
-  TRANSACTION_MESSAGE
+  TRANSACTION_MESSAGE,
+  BLOG_MESSAGE
 }
