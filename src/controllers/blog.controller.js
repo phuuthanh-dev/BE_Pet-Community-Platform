@@ -39,28 +39,33 @@ class BlogController {
     // Lấy tất cả blogs
     getAllBlogs = catchAsync(async (req, res) => {
         const { category, page = 1, limit = 10 } = req.query;
-        const filter = category ? { category } : {};
+
+        // Chỉ thêm điều kiện lọc nếu category tồn tại và hợp lệ
+        const filter = category ? { category: { $eq: category } } : {};
+
         console.log('Filter:', filter);
         try {
             const blogs = await Blog.paginate(filter, {
-                page,
-                limit,
+                page: Number(page),
+                limit: Number(limit),
                 sort: { createdAt: -1 },
                 populate: 'author'
             });
-            console.log('Blogs:', blogs); 
+
+            console.log('Blogs:', blogs);
             return res.status(200).json({
                 success: true,
                 data: blogs
             });
         } catch (error) {
-            console.error('Error fetching blogs:', error); 
+            console.error('Error fetching blogs:', error);
             return res.status(500).json({
                 success: false,
                 message: 'Internal Server Error'
             });
         }
     });
+
 
     // Lấy blog theo ID
     getBlogById = catchAsync(async (req, res) => {
