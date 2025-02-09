@@ -22,18 +22,13 @@ class BlogController {
             });
         }
 
-        // Upload thumbnail
-        const thumbnailUrl = await cloudinaryService.uploadImage(thumbnail.buffer)
-
-        const blog = await Blog.create({
+        const blog = await blogService.createBlog({
             title,
             content,
             category,
-            thumbnail: thumbnailUrl,
-            author: authorId
+            thumbnail,
+            authorId
         })
-
-        await blog.populate('author', 'username profilePicture isVerified')
 
         return res.status(201).json({
             success: true,
@@ -51,15 +46,7 @@ class BlogController {
 
     // Lấy blog theo ID
     getBlogById = catchAsync(async (req, res) => {
-        const blog = await Blog.findById(req.params.id)
-            .populate('author', 'username profilePicture isVerified')
-            .populate({
-                path: 'comments',
-                populate: {
-                    path: 'author',
-                    select: 'username profilePicture isVerified'
-                }
-            });
+        const blog = await blogService.getBlogById(req.params.id)
 
         if (!blog) {
             return res.status(404).json({
@@ -81,69 +68,58 @@ class BlogController {
         const blogId = req.params.id
         const userId = req.id
 
-        const blog = await Blog.findById(blogId)
-
-        if (!blog) {
-            return res.status(404).json({
-                success: false,
-                message: 'Blog not found'
-            });
-        }
-
-        if (blog.author.toString() !== userId) {
-            return res.status(403).json({
-                success: false,
-                message: 'Unauthorized to update this blog'
-            });
-        }
-
-        let thumbnailUrl = blog.thumbnail
-        if (thumbnail) {
-            thumbnailUrl = await cloudinaryService.uploadImage(thumbnail.buffer)
-        }
-
-        const updatedBlog = await Blog.findByIdAndUpdate(
-            blogId,
-            {
+        try {
+            const updatedBlog = await blogService.updateBlog({
+                blogId,
                 title,
                 content,
                 category,
-                thumbnail: thumbnailUrl
-            },
-            { new: true }
-        ).populate('author', 'username profilePicture isVerified');
+                thumbnail,
+                userId
+            })
 
-        return res.status(200).json({
-            success: true,
-            message: 'Blog updated successfully',
-            data: updatedBlog
-        });
+            if (!updatedBlog) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Blog not found'
+                });
+            }
+
+            return res.status(200).json({
+                success: true,
+                message: 'Blog updated successfully',
+                data: updatedBlog
+            });
+        } catch (error) {
+            return res.status(403).json({
+                success: false,
+                message: error.message
+            });
+        }
     });
 
     // Xóa blog
     deleteBlog = catchAsync(async (req, res) => {
-        const blog = await Blog.findById(req.params.id)
+        try {
+            const result = await blogService.deleteBlog(req.params.id, req.id)
 
-        if (!blog) {
-            return res.status(404).json({
-                success: false,
-                message: 'Blog not found'
+            if (!result) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Blog not found'
+                })
+            }
+
+            return res.status(200).json({
+                success: true,
+                message: 'Blog deleted successfully'
             })
-        }
-
-        if (blog.author.toString() !== req.id) {
+        } catch (error) {
             return res.status(403).json({
                 success: false,
-                message: 'Unauthorized to delete this blog'
+                message: error.message
             });
         }
-
-        await Blog.findByIdAndDelete(req.params.id)
-
-        return res.status(200).json({
-            success: true,
-            message: 'Blog deleted successfully'
-        })
     })
 }
 
