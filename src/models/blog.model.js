@@ -16,7 +16,7 @@ const blogSchema = new mongoose.Schema({
     category: {
         type: String,
         required: true,
-        enum: ['Dogs', 'Cats', 'Diet', 'Lifestyle', 'Vet']
+        enum: ['Dogs', 'Cats',]
     },
     author: {
         type: mongoose.Schema.Types.ObjectId,
