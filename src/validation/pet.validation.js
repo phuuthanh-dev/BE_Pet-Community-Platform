@@ -8,13 +8,9 @@ const addNewPet = {
     health_status: Joi.string().valid('Healthy', 'Sick', 'Recovering', 'Injured').required(),
     description: Joi.string().max(500).required(),
     image_url: Joi.array().items(Joi.string().uri()),
-    characteristics: Joi.object()
-      .keys({
-        size: Joi.string().max(32).required(),
-        coat: Joi.string().max(32).required(),
-        temperament: Joi.string().max(32).required()
-      })
-      .required(),
+    size: Joi.string().max(32).required(),
+    coat: Joi.string().max(32).required(),
+    temperament: Joi.string().max(32).required(),
     vaccinated: Joi.boolean().required(),
     submittedBy: Joi.string().optional().default(null),
     owner: Joi.string().optional().default(null)

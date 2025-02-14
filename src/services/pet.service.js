@@ -1,12 +1,14 @@
 const Pet = require('../models/pet.model')
 const mongoose = require('mongoose')
 const APIError = require('../utils/APIError')
+const cloudinaryService = require('../utils/cloudinary')
 
 class PetService {
-  async createPet(petData) {
+  async createPet(petData, imagelUrl) {
     try {
       const newPet = await Pet.create({
         ...petData,
+        image_url: imagelUrl,
         isApproved: true
       })
       return newPet
@@ -57,7 +59,10 @@ class PetService {
       throw new APIError(500, 'Error deleting pet', error.stack)
     }
   }
-  async submitPet(userId, petData) {
+  async submitPet(userId, petData, imageUrl) {
+    if (!imageUrl) {
+      throw new APIError(400, 'No file uploaded')
+    }
     if (!userId) {
       throw new APIError(400, 'User ID is required')
     }
@@ -66,6 +71,7 @@ class PetService {
       ...petData,
       submittedBy: userId,
       owner: userId,
+      image_url: imageUrl,
       isApproved: false
     })
 

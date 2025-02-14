@@ -14,14 +14,9 @@ const petSchema = new mongoose.Schema(
     },
     description: { type: String, required: true, trim: true, maxlength: 500 },
     image_url: { type: [String], required: false, trim: true },
-    characteristics: {
-      type: {
-        size: { type: String, required: true, trim: true, maxlength: 32 },
-        coat: { type: String, required: true, trim: true, maxlength: 32 },
-        temperament: { type: String, required: true, trim: true, maxlength: 32 }
-      },
-      required: true
-    },
+    size: { type: String, required: true, trim: true, maxlength: 32 },
+    coat: { type: String, required: true, trim: true, maxlength: 32 },
+    temperament: { type: String, required: true, trim: true, maxlength: 32 },
     vaccinated: { type: Boolean, required: true, default: false },
     owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
     submittedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false },
