@@ -10,52 +10,57 @@ const campaignRoute = require('./campaign.route')
 const donationRoute = require('./donation.route')
 const notificationRoute = require('./notification.route')
 const blogRoute = require('./blog.route')
+const petRoute = require('./pet.route')
 
 const routes = [
-    {
-        path: '/auth',
-        route: authRoute
-    },
-    {
-        path: '/user',
-        route: userRoute
-    },
-    {
-        path: '/post',
-        route: postRoute
-    },
-    {
-        path: '/adoption-post',
-        route: adoptionPostRoute
-    },
-    {
-        path: '/message',
-        route: messageRoute
-    },
-    {
-        path: '/payment',
-        route: paymentRoute
-    },
-    {
-        path: '/campaign',
-        route: campaignRoute
-    },
-    {
-        path: '/donation',
-        route: donationRoute
-    },
-    {
-        path: '/notification',
-        route: notificationRoute
-    },
-    {
-        path: '/blog',
-        route: blogRoute
-    }
+  {
+    path: '/auth',
+    route: authRoute
+  },
+  {
+    path: '/user',
+    route: userRoute
+  },
+  {
+    path: '/post',
+    route: postRoute
+  },
+  {
+    path: '/adoption-post',
+    route: adoptionPostRoute
+  },
+  {
+    path: '/message',
+    route: messageRoute
+  },
+  {
+    path: '/payment',
+    route: paymentRoute
+  },
+  {
+    path: '/campaign',
+    route: campaignRoute
+  },
+  {
+    path: '/donation',
+    route: donationRoute
+  },
+  {
+    path: '/notification',
+    route: notificationRoute
+  },
+  {
+    path: '/blog',
+    route: blogRoute
+  },
+  {
+    path: '/pets',
+    route: petRoute
+  }
 ]
 
 routes.forEach((route) => {
-    router.use(route.path, route.route)
+  router.use(route.path, route.route)
 })
 
 module.exports = router
