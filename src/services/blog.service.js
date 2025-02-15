@@ -13,7 +13,7 @@ class BlogService {
 
     const blog = await Blog.create({
       title,
-      content, 
+      content,
       category,
       thumbnail: thumbnailUrl,
       author: authorId
@@ -24,8 +24,18 @@ class BlogService {
   }
 
   getAllBlog = async (query) => {
-    const { sortBy, limit, page, q } = query
+    const { sortBy, limit, page, q, category } = query
     const filter = {}
+
+    // Validate và thêm điều kiện lọc theo category
+    if (category && category !== 'All Posts') {
+      // Kiểm tra category có hợp lệ không
+      const validCategories = ['Dogs', 'Cats']
+      if (validCategories.includes(category)) {
+        filter.category = category
+      }
+    }
+
     const options = {
       sortBy: sortBy || 'createdAt',
       limit: limit ? parseInt(limit) : 5,
@@ -92,6 +102,8 @@ class BlogService {
     await Blog.findByIdAndDelete(blogId)
     return true
   }
+
+
 }
 
 const blogService = new BlogService()
