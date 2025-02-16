@@ -24,14 +24,19 @@ class PetController {
     return OK(res, 'Pet deleted successfully', deletedPet)
   })
   submitPet = catchAsync(async (req, res) => {
-    if (!req.file) {
+    if (!req.files || req.files.length === 0) {
       throw new APIError(400, 'No file uploaded')
     }
-    const image_url = req.file
-    const imagelUrl = await cloudinaryService.uploadImage(image_url.buffer)
-    const pet = await petService.submitPet(req.id, req.body, imagelUrl)
+
+    const imageFiles = req.files
+
+    // Upload tất cả ảnh lên Cloudinary
+    const imageUrls = await Promise.all(imageFiles.map((file) => cloudinaryService.uploadImage(file.buffer)))
+
+    const pet = await petService.submitPet(req.id, req.body, imageUrls)
     return CREATED(res, 'Pet submitted successfully, pending approval', pet)
   })
+
   adminApprovePet = catchAsync(async (req, res) => {
     const pet = await petService.approvePet(req.params.petId)
     return OK(res, 'Pet approved successfully', pet)

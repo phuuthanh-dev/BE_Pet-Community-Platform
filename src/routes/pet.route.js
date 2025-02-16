@@ -27,7 +27,7 @@ router.delete('/delete/:id', PetController.deletePet, isAuthenticated)
 router.post(
   '/submit',
   isAuthenticated,
-  upload.single('image_url'),
+  upload.array('image_url'),
   validate(PetValidation.addNewPet),
   PetController.submitPet
 )
