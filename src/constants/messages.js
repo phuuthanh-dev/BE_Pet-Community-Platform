@@ -49,8 +49,7 @@ const BLOG_MESSAGE = {
   GET_ALL_BLOGS_SUCCESSFULLY: 'Get all blogs successfully',
   GET_BLOG_SUCCESSFULLY: 'Get blog successfully',
   BLOG_FETCHED_SUCCESSFULLY: 'Blog fetched successfully'
-};
-
+}
 
 const ADOPTION_POST_MESSAGE = {
   NOT_FOUND: 'Adoption post not found',
@@ -59,8 +58,7 @@ const ADOPTION_POST_MESSAGE = {
   DELETED_SUCCESS: 'Adoption post deleted successfully',
   FETCH_ALL_SUCCESS: 'Successfully retrieved all adoption posts',
   FETCH_SUCCESS: 'Successfully retrieved adoption post'
-};
-
+}
 
 const CAMPAIGN_MESSAGE = {
   CAMPAIGN_NOT_FOUND: 'Campaign not found',
@@ -94,6 +92,10 @@ const NOTIFICATION_MESSAGE = {
   GET_ALL_NOTIFICATIONS_SUCCESSFULLY: 'Get notifications successfully'
 }
 
+const ADMIN_MESSAGE = {
+  GET_STATS_SUCCESSFULLY: 'Get stats successfully'
+}
+
 module.exports = {
   NOTIFICATION_MESSAGE,
   COMMON_MESSAGE,
@@ -104,5 +106,6 @@ module.exports = {
   DONATION_MESSAGE,
   MESSAGE_MESSAGE,
   TRANSACTION_MESSAGE,
-  BLOG_MESSAGE
+  BLOG_MESSAGE,
+  ADMIN_MESSAGE
 }

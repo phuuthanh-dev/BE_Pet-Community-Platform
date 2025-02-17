@@ -1,34 +1,36 @@
 const User = require('../models/user.model') // Assuming you have a User model
 const Donation = require('../models/donation.model') // Assuming you have a Donation model
 
-const getDashboardData = async () => {
-  try {
-    const usersCount = await User.countDocuments({ isActive: true })
-    const donationsCount = await Donation.countDocuments()
+class AdminService {
+  getStats = async () => {
+    try {
+      const user = await User.countDocuments()
 
-    const dashboardData = {
-      usersCount,
-      donationsCount
+      const donationAggregation = await Donation.aggregate([
+        {
+          $group: {
+            _id: { $month: '$createdAt' }, // Group by month
+            total: { $sum: '$amount' } // Sum donations
+          }
+        },
+        { $sort: { _id: 1 } } // Sort by month
+      ])
+
+      // Ensure all months (1-12) are represented
+      const donations = Array.from({ length: 12 }, (_, index) => {
+        const monthData = donationAggregation.find((d) => d._id === index + 1)
+        return {
+          month: new Date(2000, index, 1).toLocaleString('en-US', { month: 'long' }), // Convert to month name
+          total: monthData ? monthData.total : 0
+        }
+      })
+
+      return { user, donations }
+    } catch (error) {
+      console.error('Error in getStats:', error)
+      throw new Error('Failed to fetch admin stats')
     }
-
-    return dashboardData
-  } catch (error) {
-    throw new Error('Error retrieving dashboard data')
   }
 }
 
-// Function to manage users
-const manageUser = (action, userId) => {
-  if (action === 'ban') {
-    return { message: `User ${userId} banned successfully` }
-  } else if (action === 'unban') {
-    return { message: `User ${userId} unbanned successfully` }
-  } else {
-    throw new Error('Invalid action')
-  }
-}
-
-module.exports = {
-  getDashboardData,
-  manageUser
-}
+module.exports = new AdminService()

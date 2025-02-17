@@ -58,7 +58,6 @@ const routes = [
     path: '/pets',
     route: petRoute
   },
-  // admin
   {
     path: '/admin',
     route: adminRoute
