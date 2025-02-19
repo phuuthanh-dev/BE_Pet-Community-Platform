@@ -1,5 +1,6 @@
 const Joi = require('joi')
-const ApiError = require('../utils/APIError')
+const ErrorWithStatus = require('../utils/errorWithStatus')
+const { StatusCodes } = require('http-status-codes')
 const _ = require('lodash')
 
 const validate = (schema) => (req, res, next) => {
@@ -11,7 +12,7 @@ const validate = (schema) => (req, res, next) => {
 
   if (error) {
     const errorMessage = error.details.map((details) => details.message).join(', ')
-    return next(new ApiError(400, errorMessage))
+    return next(new ErrorWithStatus({ status: StatusCodes.BAD_REQUEST, message: errorMessage }))
   }
   Object.assign(req, value)
   return next()

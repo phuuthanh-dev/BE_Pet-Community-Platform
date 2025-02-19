@@ -32,6 +32,7 @@ router.post(
   PetController.submitPet
 )
 router.post('/approve/:petId', isAuthenticated, PetController.adminApprovePet)
+router.get('/not-approved', isAuthenticated, PetController.getPetNotApprove)
 router.post('/adopt/:petId', isAuthenticated, PetController.userAdoptPet)
 router.post('/request/:petId', isAuthenticated, PetController.requestAdoptPet)
 

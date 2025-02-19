@@ -5,12 +5,13 @@ const notificationSchema = new mongoose.Schema(
     recipient: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: true
+      required: true,
+      index: true
     },
     sender: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: true
+      default: null
     },
     type: {
       type: String,
@@ -19,11 +20,13 @@ const notificationSchema = new mongoose.Schema(
     },
     post: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Post'
+      ref: 'Post',
+      default: null
     },
     read: {
       type: Boolean,
-      default: false
+      default: false,
+      index: true
     },
     message: {
       type: String,
