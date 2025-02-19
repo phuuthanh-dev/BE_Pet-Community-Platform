@@ -1,7 +1,11 @@
 const Pet = require('../models/pet.model')
 const mongoose = require('mongoose')
-const APIError = require('../utils/APIError')
+const ErrorWithStatus = require('../utils/errorWithStatus')
+const { StatusCodes } = require('http-status-codes')
 const cloudinaryService = require('../utils/cloudinary')
+const { getReceiverSocketId, io } = require('../socket/socket')
+const Notification = require('../models/notification.model')
+const { NOTIFICAITON_TYPE } = require('../constants/enums')
 
 class PetService {
   async createPet(petData, imagelUrl) {
@@ -13,58 +17,62 @@ class PetService {
       })
       return newPet
     } catch (error) {
-      console.error('Error creating pet:', error)
       if (error.name === 'ValidationError') {
-        const errors = Object.values(error.errors).map((err) => err.message)
-        throw new APIError(400, 'Validation Error', errors)
+        throw new ErrorWithStatus({
+          status: StatusCodes.BAD_REQUEST,
+          message: 'Validation Error'
+        })
       }
-      throw new APIError(500, 'Error adding pet', error.stack)
+      throw new ErrorWithStatus({ status: StatusCodes.INTERNAL_SERVER_ERROR, message: 'Error adding pet' })
     }
   }
+
   async updatePet(petData) {
     const { id, ...updateData } = petData
 
     if (!id) {
-      throw new APIError(400, 'Pet ID is required for update')
+      throw new ErrorWithStatus({ status: StatusCodes.BAD_REQUEST, message: 'Pet ID is required for update' })
     }
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      throw new APIError(400, 'Invalid Pet ID format')
+      throw new ErrorWithStatus({ status: StatusCodes.BAD_REQUEST, message: 'Invalid Pet ID format' })
     }
 
     const updatedPet = await Pet.findByIdAndUpdate(id, updateData, { new: true })
 
     if (!updatedPet) {
-      throw new APIError(404, 'Pet not found with the given ID')
+      throw new ErrorWithStatus({ status: StatusCodes.NOT_FOUND, message: 'Pet not found with the given ID' })
     }
 
     return updatedPet
   }
+
   async deletePet(petId) {
     try {
       if (!petId) {
-        throw new APIError(400, 'Pet ID is required')
+        throw new ErrorWithStatus({ status: StatusCodes.BAD_REQUEST, message: 'Pet ID is required' })
       }
 
       const deletedPet = await Pet.findByIdAndDelete(petId)
       if (!deletedPet) {
-        throw new APIError(404, 'Pet not found')
+        throw new ErrorWithStatus({ status: StatusCodes.NOT_FOUND, message: 'Pet not found' })
       }
 
       return deletedPet
     } catch (error) {
       if (error.name === 'CastError') {
-        throw new APIError(400, 'Invalid Pet ID format')
+        throw new ErrorWithStatus({ status: StatusCodes.BAD_REQUEST, message: 'Invalid Pet ID format' })
       }
-      throw new APIError(500, 'Error deleting pet', error.stack)
+      throw new ErrorWithStatus({ status: StatusCodes.INTERNAL_SERVER_ERROR, message: 'Error deleting pet' })
     }
   }
+
   async submitPet(userId, petData, imageUrl) {
     if (!imageUrl) {
-      throw new APIError(400, 'No file uploaded')
+      throw new ErrorWithStatus({ status: StatusCodes.BAD_REQUEST, message: 'No file uploaded' })
     }
     if (!userId) {
-      throw new APIError(400, 'User ID is required')
+      throw new ErrorWithStatus({ status: StatusCodes.BAD_REQUEST, message: 'User ID is required' })
     }
 
     const newPet = await Pet.create({
@@ -77,40 +85,67 @@ class PetService {
 
     return newPet
   }
+
+  async getAllPetNotApproved() {
+    const pets = await Pet.find({ isApproved: false }).populate('submittedBy')
+    return pets
+  }
+
   async approvePet(petId) {
-    const pet = await Pet.findById(petId)
+    const pet = await Pet.findById(petId).populate('submittedBy')
     if (!pet) {
-      throw new APIError(404, 'Pet not found')
+      throw new ErrorWithStatus({ status: StatusCodes.NOT_FOUND, message: 'Pet not found' })
     }
 
     if (pet.isApproved) {
-      throw new APIError(400, 'Pet is already approved')
+      throw new ErrorWithStatus({ status: StatusCodes.BAD_REQUEST, message: 'Pet is already approved' })
     }
 
     pet.owner = null
     pet.isApproved = true
     await pet.save()
 
+    const notification = await Notification.create({
+      type: NOTIFICAITON_TYPE.APPROVE,
+      sender: null,
+      recipient: pet.submittedBy._id,
+      post: null,
+      message: `Yêu cầu nhận nuôi thú cưng của bạn đã được phê duyệt!`,
+      read: false
+    })
+
+    const userSocketId = getReceiverSocketId(pet.submittedBy._id.toString())
+    if (userSocketId) {
+      io.to(userSocketId).emit('notification', {
+        ...notification.toObject(),
+        sender: null
+      })
+    }
+
     return pet
   }
+
   async requestAdoption(userId, petId) {
     if (!userId || !petId) {
-      throw new APIError(400, 'User ID and Pet ID are required')
+      throw new ErrorWithStatus({ status: StatusCodes.BAD_REQUEST, message: 'User ID and Pet ID are required' })
     }
 
     const pet = await Pet.findById(petId)
     if (!pet) {
-      throw new APIError(404, 'Pet not found')
+      throw new ErrorWithStatus({ status: StatusCodes.NOT_FOUND, message: 'Pet not found' })
     }
     if (!pet.isApproved) {
-      throw new APIError(400, 'Pet is not available for adoption')
+      throw new ErrorWithStatus({ status: StatusCodes.BAD_REQUEST, message: 'Pet is not available for adoption' })
     }
     if (pet.isAdopted) {
-      throw new APIError(400, 'Pet has already been adopted')
+      throw new ErrorWithStatus({ status: StatusCodes.BAD_REQUEST, message: 'Pet has already been adopted' })
     }
 
     if (pet.adoptionRequests.includes(userId)) {
-      throw new APIError(400, 'You have already requested to adopt this pet')
+      throw new ErrorWithStatus({
+        status: StatusCodes.BAD_REQUEST,
+        message: 'You have already requested to adopt this pet'
+      })
     }
 
     pet.adoptionRequests.push(userId)
@@ -122,21 +157,24 @@ class PetService {
   async adoptPet(userId, petId) {
     const pet = await Pet.findById(petId)
     if (!pet) {
-      throw new APIError(404, 'Pet not found')
+      throw new ErrorWithStatus({ status: StatusCodes.NOT_FOUND, message: 'Pet not found' })
     }
 
     if (!pet.isApproved) {
-      throw new APIError(400, 'Pet is not available for adoption')
+      throw new ErrorWithStatus({ status: StatusCodes.BAD_REQUEST, message: 'Pet is not available for adoption' })
     }
     if (pet.isAdopted) {
-      throw new APIError(400, 'Pet has already been adopted')
+      throw new ErrorWithStatus({ status: StatusCodes.BAD_REQUEST, message: 'Pet has already been adopted' })
     }
 
     if (pet.owner) {
-      throw new APIError(400, 'Pet has already been adopted')
+      throw new ErrorWithStatus({ status: StatusCodes.BAD_REQUEST, message: 'Pet has already been adopted' })
     }
     if (!pet.adoptionRequests.includes(userId)) {
-      throw new APIError(400, 'This user did not request to adopt this pet')
+      throw new ErrorWithStatus({
+        status: StatusCodes.BAD_REQUEST,
+        message: 'This user did not request to adopt this pet'
+      })
     }
     pet.isAdopted = true
     pet.adoptionRequests = []

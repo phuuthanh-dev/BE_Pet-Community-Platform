@@ -27,11 +27,12 @@ router.delete('/delete/:id', PetController.deletePet, isAuthenticated)
 router.post(
   '/submit',
   isAuthenticated,
-  upload.single('image_url'),
+  upload.array('image_url'),
   validate(PetValidation.addNewPet),
   PetController.submitPet
 )
 router.post('/approve/:petId', isAuthenticated, PetController.adminApprovePet)
+router.get('/not-approved', isAuthenticated, PetController.getPetNotApprove)
 router.post('/adopt/:petId', isAuthenticated, PetController.userAdoptPet)
 router.post('/request/:petId', isAuthenticated, PetController.requestAdoptPet)
 

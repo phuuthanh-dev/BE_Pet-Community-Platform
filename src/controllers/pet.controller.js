@@ -1,8 +1,9 @@
 const catchAsync = require('../utils/catchAsync')
 const { OK, CREATED } = require('../configs/response.config')
-const APIError = require('../utils/APIError')
 const petService = require('../services/pet.service')
 const cloudinaryService = require('../utils/cloudinary')
+const ErrorWithStatus = require('../utils/errorWithStatus')
+const { StatusCodes } = require('http-status-codes')
 
 class PetController {
   addNewPet = catchAsync(async (req, res) => {
@@ -24,17 +25,25 @@ class PetController {
     return OK(res, 'Pet deleted successfully', deletedPet)
   })
   submitPet = catchAsync(async (req, res) => {
-    if (!req.file) {
-      throw new APIError(400, 'No file uploaded')
+    if (!req.files || req.files.length === 0) {
+      throw new ErrorWithStatus({ status: 400, message: 'No file uploaded' })
     }
-    const image_url = req.file
-    const imagelUrl = await cloudinaryService.uploadImage(image_url.buffer)
-    const pet = await petService.submitPet(req.id, req.body, imagelUrl)
+
+    const imageFiles = req.files
+
+    const imageUrls = await Promise.all(imageFiles.map((file) => cloudinaryService.uploadImage(file.buffer)))
+
+    const pet = await petService.submitPet(req.id, req.body, imageUrls)
     return CREATED(res, 'Pet submitted successfully, pending approval', pet)
   })
+
   adminApprovePet = catchAsync(async (req, res) => {
     const pet = await petService.approvePet(req.params.petId)
     return OK(res, 'Pet approved successfully', pet)
+  })
+  getPetNotApprove = catchAsync(async (req, res) => {
+    const pet = await petService.getAllPetNotApproved()
+    return OK(res, 'Pet retrieved successfully', pet)
   })
   requestAdoptPet = catchAsync(async (req, res) => {
     const pet = await petService.requestAdoption(req.id, req.params.petId)
