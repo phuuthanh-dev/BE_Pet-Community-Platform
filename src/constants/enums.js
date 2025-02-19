@@ -6,7 +6,8 @@ const GENDER = {
 const NOTIFICAITON_TYPE = {
   FOLLOW: 'follow',
   LIKE: 'like',
-  COMMENT: 'comment'
+  COMMENT: 'comment',
+  APPROVE: 'approve'
 }
 
 const ROLE = {
