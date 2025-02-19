@@ -9,6 +9,8 @@ const { errorHandler } = require('./middlewares/error.middlewares.js')
 const { app, server } = require('./socket/socket.js')
 const path = require('path')
 const PORT = process.env.PORT || 3000
+const { swaggerUi, swaggerSetup } = require('./configs/swagger')
+
 
 //middlewares
 app.use(express.json())
@@ -23,6 +25,11 @@ app.use(cors(corsOptions))
 app.options('*', cors(corsOptions))
 
 app.use('/api/v1', appRouter)
+
+app.use('/api-docs', swaggerUi.serve);
+app.get('/api-docs', (req, res) => {
+  res.send(swaggerSetup(req, res));
+});
 
 app.use(errorHandler)
 
