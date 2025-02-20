@@ -2,7 +2,8 @@ const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
 const path = require('path');
 
-const swaggerDocument = YAML.load(path.join(__dirname, '../../docs/swagger.yaml'));
+// const swaggerDocument = YAML.load(path.join(__dirname, '../../docs/swagger.yaml'));
+const swaggerDocument = YAML.load(path.join(__dirname, '../../docs/openapi.yaml'));
 
 const addServers = (req) => {
   const doc = { ...swaggerDocument };
