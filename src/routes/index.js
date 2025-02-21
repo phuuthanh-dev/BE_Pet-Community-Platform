@@ -11,6 +11,7 @@ const donationRoute = require('./donation.route')
 const notificationRoute = require('./notification.route')
 const blogRoute = require('./blog.route')
 const petRoute = require('./pet.route')
+const adminRoute = require('./admin.route')
 
 const routes = [
   {
@@ -56,6 +57,10 @@ const routes = [
   {
     path: '/pets',
     route: petRoute
+  },
+  {
+    path: '/admin',
+    route: adminRoute
   }
 ]
 
