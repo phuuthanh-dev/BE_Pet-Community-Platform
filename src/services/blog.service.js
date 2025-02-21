@@ -1,4 +1,5 @@
 const Blog = require('../models/blog.model.js')
+const User = require('../models/user.model.js')
 const blogRepo = require('../repositories/blog.repo.js')
 const cloudinaryService = require('../utils/cloudinary')
 
@@ -10,7 +11,10 @@ class BlogService {
   createBlog = async ({ title, content, category, thumbnail, authorId }) => {
     // Upload thumbnail
     const thumbnailUrl = await cloudinaryService.uploadImage(thumbnail.buffer)
-
+    const author = await User.findById(authorId)
+    if (author.role !== "forum_staff") {
+      throw new Error('You are not allowed to create a blog')
+    }
     const blog = await Blog.create({
       title,
       content,
@@ -62,7 +66,10 @@ class BlogService {
 
   updateBlog = async ({ blogId, title, content, category, thumbnail, userId }) => {
     const blog = await Blog.findById(blogId)
-
+    const author = await User.findById(userId)
+    if (!author || author.role !== "forum_staff") {
+      throw new Error('You are not allowed to create a blog')
+    }
     if (!blog) {
       return null
     }
@@ -89,19 +96,19 @@ class BlogService {
   }
 
   deleteBlog = async (blogId, userId) => {
-    const blog = await Blog.findById(blogId)
-
+    const blog = await Blog.findById(blogId);
     if (!blog) {
-      return null
+      throw new Error("Blog not found");
     }
 
-    if (blog.author.toString() !== userId) {
-      throw new Error('Unauthorized to delete this blog')
+    const user = await User.findById(userId);
+    if (!user || user.role !== "forum_staff") {
+      throw new Error("You are not allowed to delete this blog");
     }
 
-    await Blog.findByIdAndDelete(blogId)
-    return true
-  }
+    await Blog.findByIdAndDelete(blogId);
+    return true;
+  };
 
 
 }

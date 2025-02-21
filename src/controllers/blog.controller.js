@@ -100,8 +100,11 @@ class BlogController {
 
     // Xóa blog
     deleteBlog = catchAsync(async (req, res) => {
+        const role = req.role;
+        const userId = req.id;
+        const blogId = req.params.id;
         try {
-            const result = await blogService.deleteBlog(req.params.id, req.id)
+            const result = await blogService.deleteBlog(blogId, userId);
 
             if (!result) {
                 return res.status(404).json({
