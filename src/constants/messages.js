@@ -93,7 +93,8 @@ const NOTIFICATION_MESSAGE = {
 }
 
 const ADMIN_MESSAGE = {
-  GET_STATS_SUCCESSFULLY: 'Get stats successfully'
+  GET_STATS_SUCCESSFULLY: 'Get stats successfully',
+  GET_ALL_STAFFS_SUCCESSFULLY: 'Get all staffs successfully'
 }
 
 module.exports = {

@@ -1,0 +1,712 @@
+openapi: 3.0.0
+info:
+  title: PLC API
+  description: API for PLC
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000/api/v1
+    description: Local development server
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        profilePicture:
+          type: string
+        bio:
+          type: string
+        gender:
+          type: string
+        followers:
+          type: array
+          items:
+            type: string
+        following:
+          type: array
+          items:
+            type: string
+        posts:
+          type: array
+          items:
+            type: string
+        bookmarks:
+          type: array
+          items:
+            type: string
+        isVerified:
+          type: boolean
+        isActive:
+          type: boolean
+        isDeleted:
+          type: boolean
+        isBlocked:
+          type: boolean
+        address:
+          type: string
+        phoneNumber:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+        role:
+          type: string
+    Post:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        caption:
+          type: string
+        media:
+          type: array
+          items:
+            type: string
+        likes:
+          type: integer
+        dislikes:
+          type: integer
+        comments:
+          type: array
+          items:
+            type: object
+            properties:
+              userId:
+                type: string
+              text:
+                type: string
+        bookmarks:
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    Pet:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        breed:
+          type: string
+        age:
+          type: integer
+        health_status:
+          type: string
+          enum: [Healthy, Sick, Recovering, Injured]
+        description:
+          type: string
+        image_url:
+          type: array
+          items:
+            type: string
+        size:
+          type: string
+        coat:
+          type: string
+        temperament:
+          type: string
+        vaccinated:
+          type: boolean
+        owner:
+          type: string
+          nullable: true
+        submittedBy:
+          type: string
+          nullable: true
+        isApproved:
+          type: boolean
+        isAdopted:
+          type: boolean
+        adoptionRequests:
+          type: array
+          items:
+            type: string
+    CreatePaymentRequest:
+      type: object
+      properties:
+        amount:
+          type: number
+          example: 50000
+        description:
+          type: string
+          example: 'Donation to campaign'
+        campaignId:
+          type: string
+          format: uuid
+        returnUrl:
+          type: string
+          format: uri
+        cancelUrl:
+          type: string
+          format: uri
+      required:
+        - amount
+        - campaignIdA
+    Notification:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '60f7c5e8f0d5d90015d28b3f'
+        recipient:
+          type: string
+          example: '60f7c5e8f0d5d90015d28b3e'
+        sender:
+          type: string
+          example: '60f7c5e8f0d5d90015d28b3d'
+        type:
+          type: string
+          enum: [like, comment, follow, mention]
+          example: 'like'
+        post:
+          type: string
+          nullable: true
+          example: '60f7c5e8f0d5d90015d28b3a'
+        read:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: 'User123 liked your post.'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    PaymentLinkResponse:
+      type: object
+      properties:
+        paymentUrl:
+          type: string
+          format: uri
+          example: 'https://payment.provider.com/checkout/12345'
+        expiresAt:
+          type: string
+          format: date-time
+      required:
+        - paymentUrl
+        - expiresAt
+    CancelPaymentRequest:
+      type: object
+      properties:
+        paymentId:
+          type: string
+          format: uuid
+          example: 'c29d9c21-4b60-4b11-9f00-d8f6e3a3c21f'
+      required:
+        - paymentId
+    PaymentWebhook:
+      type: object
+      properties:
+        eventType:
+          type: string
+          example: 'PAYMENT_COMPLETED'
+        paymentId:
+          type: string
+          format: uuid
+        timestamp:
+          type: string
+          format: date-time
+      required:
+        - eventType
+        - paymentId
+        - timestamp
+
+tags:
+  - name: User
+    description: Endpoints related to user management
+  - name: Post
+    description: Endpoints related to post management
+  - name: Pet
+    description: Endpoints related to pet management
+  - name: Notification
+    description: Endpoints related to notification management
+  - name: Payment
+    description: Endpoints related to payment management
+
+paths:
+  /users/{username}/profile:
+    get:
+      tags:
+        - User
+      summary: Get user profile by username
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: User profile fetched successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+  /users/id/{id}/profile:
+    get:
+      tags:
+        - User
+      summary: Get user profile by ID
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: User profile fetched successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+  /users/profile/edit:
+    post:
+      tags:
+        - User
+      summary: Edit user profile
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                profilePicture:
+                  type: string
+                  format: binary
+                username:
+                  type: string
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                bio:
+                  type: string
+      responses:
+        200:
+          description: User profile updated successfully
+
+  /users/suggested:
+    get:
+      tags:
+        - User
+      summary: Get suggested users
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Suggested users fetched successfully
+
+  /users/followorunfollow/{id}:
+    post:
+      tags:
+        - User
+      summary: Follow or unfollow a user
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: User followed or unfollowed successfully
+
+  /users/chat-users:
+    get:
+      tags:
+        - User
+      summary: Get chat users
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Chat users fetched successfully
+
+  /users/all:
+    get:
+      tags:
+        - User
+      summary: Get all users
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: All users fetched successfully
+
+  /post/addpost:
+    post:
+      tags:
+        - Post
+      summary: Add a new post
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Post'
+      responses:
+        '201':
+          description: Post created successfully
+        '400':
+          description: Invalid request data
+
+  /post/all:
+    get:
+      tags:
+        - Post
+      summary: Get all posts
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of posts
+
+  /post/{id}/like:
+    put:
+      tags:
+        - Post
+      summary: Like a post
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Post liked successfully
+
+  /post/{id}/dislike:
+    put:
+      tags:
+        - Post
+      summary: Dislike a post
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Post disliked successfully
+
+  /post/{id}/comment:
+    post:
+      tags:
+        - Post
+      summary: Add a comment to a post
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Post'
+      responses:
+        '201':
+          description: Comment added successfully
+
+  /post/{id}/bookmark:
+    get:
+      tags:
+        - Post
+      summary: Bookmark or unbookmark a post
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Post bookmarked/unbookmarked successfully
+
+  /pets/add:
+    post:
+      tags:
+        - Pet
+      summary: Add a new pet
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Pet'
+      responses:
+        201:
+          description: Pet added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pet'
+
+  /pets/update:
+    post:
+      tags:
+        - Pet
+      summary: Update an existing pet
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pet'
+      responses:
+        200:
+          description: Pet updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pet'
+
+  /pets/delete/{id}:
+    delete:
+      tags:
+        - Pet
+      summary: Delete a pet
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Pet deleted successfully
+
+  /pets/submit:
+    post:
+      tags:
+        - Pet
+      summary: Submit a pet for approval
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Pet'
+      responses:
+        201:
+          description: Pet submitted successfully, pending approval
+
+  /pets/approve/{petId}:
+    post:
+      tags:
+        - Pet
+      summary: Approve a pet listing
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: petId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Pet approved successfully
+
+  /pets/request/{petId}:
+    post:
+      tags:
+        - Pet
+      summary: Request to adopt a pet
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: petId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Adoption request sent successfully
+
+  /pets/adopt/{petId}:
+    post:
+      tags:
+        - Pet
+      summary: Adopt a pet
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: petId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Pet adopted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Pet adopted successfully'
+
+  /notifications/all:
+    get:
+      tags:
+        - Notification
+      summary: Get all notifications for the authenticated user
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: q
+          in: query
+          schema:
+            type: string
+          description: Search query for filtering notifications by message
+        - name: page
+          in: query
+          schema:
+            type: integer
+          description: Page number for pagination
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          description: Number of notifications per page
+        - name: sortBy
+          in: query
+          schema:
+            type: string
+          description: Field to sort by
+      responses:
+        '200':
+          description: List of notifications retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  notifications:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Notification'
+
+  /payment/member/create-payment-link:
+    post:
+      tags:
+        - Payment
+      summary: Create a payment link for a member
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePaymentRequest'
+      responses:
+        '200':
+          description: Payment link created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentLinkResponse'
+
+  /payment/cancel-payment-link:
+    put:
+      tags:
+        - Payment
+      summary: Cancel a payment link
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentLinkResponse'
+      responses:
+        '200':
+          description: Payment link canceled successfully
+
+  /payment/receive-hook:
+    post:
+      tags:
+        - Payment
+      summary: Receive webhook from payment provider
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentWebhook'
+      responses:
+        '200':
+          description: Webhook processed successfully

@@ -31,6 +31,16 @@ class AdminService {
       throw new Error('Failed to fetch admin stats')
     }
   }
+
+  getAllStaffs = async () => {
+    try {
+      const staffs = await User.find({ role: 'staff' })
+      return staffs
+    } catch (error) {
+      console.error('Error in getAllStaffs:', error)
+      throw new Error('Failed to fetch staffs')
+    }
+  }
 }
 
 module.exports = new AdminService()
