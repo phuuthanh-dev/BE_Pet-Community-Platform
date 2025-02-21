@@ -1,9 +1,11 @@
 const express = require('express')
 const isAuthenticated = require('../middlewares/isAuthenticated.js')
 const adminController = require('../controllers/admin.controller.js')
+const checkRole = require('../middlewares/checkRole.js')
+const { ROLE } = require('../constants/enums.js')
 const router = express.Router()
 
-router.get('/stats', isAuthenticated, adminController.getStats)
-router.get('/staff', isAuthenticated, adminController.getAllStaffs)
+router.get('/stats', isAuthenticated, checkRole(ROLE.ADMIN), adminController.getStats)
+router.get('/staff', isAuthenticated, checkRole(ROLE.ADMIN), adminController.getAllStaffs)
 
 module.exports = router

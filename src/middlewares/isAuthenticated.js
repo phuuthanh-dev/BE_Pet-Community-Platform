@@ -12,6 +12,7 @@ const isAuthenticated = async (req, res, next) => {
 
     req.jwtDecoded = accessTokenDecoded
     req.id = accessTokenDecoded.userId
+    req.role = accessTokenDecoded.role
     next()
   } catch (error) {
     if (error.message?.includes('jwt expired')) {

@@ -7,9 +7,10 @@ const { generateToken, verifyToken } = require('../utils/jwt.js')
 const { TokenType } = require('../constants/enums.js')
 
 class AuthService {
-  signAccessToken = async ({ user_id }) => {
+  signAccessToken = async ({ user_id, role }) => {
     const payload = {
       userId: user_id,
+      role,
       type: TokenType.AccessToken
     }
     return generateToken(
@@ -55,10 +56,10 @@ class AuthService {
     )
   }
 
-  signAccessAndRefreshToken = async ({ user_id }) => {
+  signAccessAndRefreshToken = async ({ user_id, role }) => {
     const [access_token, refresh_token] = await Promise.all([
-      this.signAccessToken({ user_id }),
-      this.signRefreshToken({ user_id })
+      this.signAccessToken({ user_id, role }),
+      this.signRefreshToken({ user_id, role })
     ])
     return { access_token, refresh_token }
   }
@@ -85,7 +86,8 @@ class AuthService {
     })
 
     const { access_token, refresh_token } = await this.signAccessAndRefreshToken({
-      user_id: newUser._id.toString()
+      user_id: newUser._id.toString(),
+      role: newUser.role
     })
 
     return {
@@ -117,7 +119,8 @@ class AuthService {
     }
 
     const { access_token, refresh_token } = await this.signAccessAndRefreshToken({
-      user_id: isUserExists._id.toString()
+      user_id: isUserExists._id.toString(),
+      role: isUserExists.role
     })
 
     return {
