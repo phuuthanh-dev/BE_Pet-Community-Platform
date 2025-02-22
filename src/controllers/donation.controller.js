@@ -8,6 +8,11 @@ class DonationController {
     const topDonate = await donationService.getTop5Donate()
     return OK(res, DONATION_MESSAGE.TOP_5_DONATE_FETCHED_SUCCESSFULLY, topDonate)
   })
+
+  getAllDonation = catchAsync(async (req, res) => {
+    const donations = await donationService.getAllDonation(req.query)
+    return OK(res, DONATION_MESSAGE.ALL_DONATION_FETCHED_SUCCESSFULLY, donations)
+  })
 }
 
 module.exports = new DonationController()

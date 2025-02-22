@@ -4,6 +4,7 @@ const Donation = require('../models/donation.model')
 const { CAMPAIGN_MESSAGE, TRANSACTION_MESSAGE } = require('../constants/messages')
 const ErrorWithStatus = require('../utils/errorWithStatus')
 const { TRANSACTION_STATUS } = require('../constants/enums')
+const { date } = require('joi')
 
 class DonationService {
   updateDonationStatus = async (orderCode, paymentData) => {
@@ -72,6 +73,18 @@ class DonationService {
     ])
     return topDonate
   }
-}
 
+  getAllDonation = async (query) => {
+    const { q, page, limit, sortBy } = query
+    const options = {
+      sortBy: sortBy || 'createdAt',
+      limit: limit ? parseInt(limit) : 5,
+      page: page ? parseInt(page) : 1,
+      allowSearchFields: ['campaign'],
+      q: q ?? '',
+      fields: '-campaign'
+    }
+    return await Donation.paginate({}, options)
+  }
+}
 module.exports = new DonationService()
