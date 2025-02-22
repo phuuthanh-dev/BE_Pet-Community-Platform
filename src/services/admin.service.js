@@ -1,6 +1,6 @@
 const User = require('../models/user.model') // Assuming you have a User model
 const Donation = require('../models/donation.model') // Assuming you have a Donation model
-
+const { ROLE } = require('../constants/enums')
 class AdminService {
   getStats = async () => {
     try {
@@ -32,10 +32,32 @@ class AdminService {
     }
   }
 
-  getAllStaffs = async () => {
+  getAllStaffs = async (query, userId) => {
+    const { q, page, limit, sortBy } = query
+
+    const filter = {
+      isActive: true,
+      _id: { $ne: userId },
+      role: { $in: [ROLE.SERVICE_STAFF, ROLE.FORUM_STAFF] } // Proper role filtering
+    }
+
+    const options = {
+      limit: limit ? parseInt(limit) : 5,
+      page: page ? parseInt(page) : 1,
+      sortBy: sortBy || 'createdAt',
+      allowSearchFields: ['username'],
+      q: q ?? '',
+      fields: '-password'
+    }
+
     try {
-      const staffs = await User.find({ role: 'staff' })
-      return staffs
+      const staffs = await User.find(filter)
+        .select(options.fields) // Exclude password
+        .sort({ [options.sortBy]: -1 }) // Sort in descending order
+        .skip((options.page - 1) * options.limit)
+        .limit(options.limit)
+
+      return staffs // Ensure the function returns data
     } catch (error) {
       console.error('Error in getAllStaffs:', error)
       throw new Error('Failed to fetch staffs')
