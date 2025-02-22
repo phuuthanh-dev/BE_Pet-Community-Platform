@@ -1477,134 +1477,80 @@ paths:
                 $ref: '#/components/schemas/AdminStatsResponse'
         '403':
           description: Unauthorized access
-
-
-  /create:
-    post:
-      summary: Tạo blog mới
-      security:
-        - BearerAuth: []
-      tags:
-        - Blogs
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                title:
-                  type: string
-                content:
-                  type: string
-                category:
-                  type: string
-                thumbnail:
-                  type: string
-                  format: binary
-      responses:
-        201:
-          description: Tạo blog thành công
-        400:
-          description: Thiếu thumbnail hoặc dữ liệu không hợp lệ
-        403:
-          description: Không có quyền tạo blog
-
-  /all:
+          
+  /admin/staffs:
     get:
-      summary: Lấy danh sách blog
       tags:
-        - Blogs
+        - Admin
+      summary: Get all staff members
+      description: Retrieve a list of staff members with pagination, sorting, and filtering.
       parameters:
-        - name: category
+        - name: q
           in: query
+          description: Search query for filtering by username.
           schema:
             type: string
-        - name: sortBy
-          in: query
-          schema:
-            type: string
-        - name: limit
-          in: query
-          schema:
-            type: integer
         - name: page
           in: query
+          description: Page number for pagination.
           schema:
             type: integer
-      responses:
-        200:
-          description: Lấy danh sách blog thành công
-
-  /{id}:
-    get:
-      summary: Lấy chi tiết blog theo ID
-      tags:
-        - Blogs
-      parameters:
-        - name: id
-          in: path
-          required: true
+            default: 1
+        - name: limit
+          in: query
+          description: Number of items per page.
+          schema:
+            type: integer
+            default: 5
+        - name: sortBy
+          in: query
+          description: Field to sort the results by.
           schema:
             type: string
+            default: createdAt
       responses:
-        200:
-          description: Trả về thông tin blog
-        404:
-          description: Blog không tồn tại
+        "200":
+          description: Successfully retrieved staff members.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: "Staff members retrieved successfully"
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                          example: "60d0fe4f5311236168a109ca"
+                        username:
+                          type: string
+                          example: "staffUser123"
+                        role:
+                          type: string
+                          enum: [SERVICE_STAFF, FORUM_STAFF]
+                          example: "SERVICE_STAFF"
+                        isActive:
+                          type: boolean
+                          example: true
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: "Failed to fetch staffs"
 
-    put:
-      summary: Cập nhật blog
-      security:
-        - BearerAuth: []
-      tags:
-        - Blogs
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                title:
-                  type: string
-                content:
-                  type: string
-                category:
-                  type: string
-                thumbnail:
-                  type: string
-                  format: binary
-      responses:
-        200:
-          description: Blog được cập nhật thành công
-        403:
-          description: Không có quyền chỉnh sửa blog
-        404:
-          description: Blog không tồn tại
-
-    delete:
-      summary: Xóa blog
-      security:
-        - BearerAuth: []
-      tags:
-        - Blogs
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        200:
-          description: Blog đã bị xóa
-        403:
-          description: Không có quyền xóa blog
-        404:
-          description: Blog không tồn tại
