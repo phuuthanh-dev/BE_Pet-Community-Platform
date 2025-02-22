@@ -1212,7 +1212,7 @@ paths:
           description: No active campaign found
         "401":
           description: Unauthorized
-  /blogs/create:
+  /blog/create:
     post:
       tags:
         - Blogs
@@ -1238,7 +1238,7 @@ paths:
         "401":
           description: Unauthorized
 
-  /blogs/all:
+  /blog/all:
     get:
       tags:
         - Blogs
@@ -1270,7 +1270,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/Blog"
 
-  /blogs/{id}:
+  /blog/{id}:
     get:
       tags:
         - Blogs
@@ -1477,3 +1477,134 @@ paths:
                 $ref: '#/components/schemas/AdminStatsResponse'
         '403':
           description: Unauthorized access
+
+
+  /create:
+    post:
+      summary: Tạo blog mới
+      security:
+        - BearerAuth: []
+      tags:
+        - Blogs
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                content:
+                  type: string
+                category:
+                  type: string
+                thumbnail:
+                  type: string
+                  format: binary
+      responses:
+        201:
+          description: Tạo blog thành công
+        400:
+          description: Thiếu thumbnail hoặc dữ liệu không hợp lệ
+        403:
+          description: Không có quyền tạo blog
+
+  /all:
+    get:
+      summary: Lấy danh sách blog
+      tags:
+        - Blogs
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: string
+        - name: sortBy
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+        - name: page
+          in: query
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Lấy danh sách blog thành công
+
+  /{id}:
+    get:
+      summary: Lấy chi tiết blog theo ID
+      tags:
+        - Blogs
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Trả về thông tin blog
+        404:
+          description: Blog không tồn tại
+
+    put:
+      summary: Cập nhật blog
+      security:
+        - BearerAuth: []
+      tags:
+        - Blogs
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                content:
+                  type: string
+                category:
+                  type: string
+                thumbnail:
+                  type: string
+                  format: binary
+      responses:
+        200:
+          description: Blog được cập nhật thành công
+        403:
+          description: Không có quyền chỉnh sửa blog
+        404:
+          description: Blog không tồn tại
+
+    delete:
+      summary: Xóa blog
+      security:
+        - BearerAuth: []
+      tags:
+        - Blogs
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Blog đã bị xóa
+        403:
+          description: Không có quyền xóa blog
+        404:
+          description: Blog không tồn tại
