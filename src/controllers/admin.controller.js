@@ -9,7 +9,7 @@ class adminController {
   }
 
   getAllStaffs = async (req, res) => {
-    const staffs = await adminService.getAllStaffs()
+    const staffs = await adminService.getAllStaffs(req.query, req.id)
     return OK(res, ADMIN_MESSAGE.GET_ALL_STAFFS_SUCCESSFULLY, staffs)
   }
 }
