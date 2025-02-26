@@ -19,23 +19,18 @@ const addNewPet = {
 
 const updatePet = {
   body: Joi.object().keys({
-    id: Joi.string().required(),
     name: Joi.string().max(32).optional(),
     breed: Joi.string().max(32).optional(),
     age: Joi.number().min(0).optional(),
     health_status: Joi.string().valid('Healthy', 'Sick', 'Recovering', 'Injured').optional(),
     description: Joi.string().max(500).optional(),
-    image_url: Joi.array().items(Joi.string().uri()).optional(),
-    characteristics: Joi.object()
-      .keys({
-        size: Joi.string().max(32).optional(),
-        coat: Joi.string().max(32).optional(),
-        temperament: Joi.string().max(32).optional()
-      })
-      .optional(),
+    image_url: Joi.array().items(Joi.string().uri()),
+    size: Joi.string().max(32).optional(),
+    coat: Joi.string().max(32).optional(),
+    temperament: Joi.string().max(32).optional(),
     vaccinated: Joi.boolean().optional(),
-    owner: Joi.string().optional(),
-    submittedBy: Joi.string().optional().default(null)
+    submittedBy: Joi.string().optional().default(null),
+    owner: Joi.string().optional().default(null)
   })
 }
 

@@ -27,22 +27,50 @@ class PetService {
     }
   }
 
-  async updatePet(petData) {
-    const { id, ...updateData } = petData
-
-    if (!id) {
+  async updatePet(petId, petData, imageUrl) {
+    if (!petId) {
       throw new ErrorWithStatus({ status: StatusCodes.BAD_REQUEST, message: 'Pet ID is required for update' })
     }
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
+    if (!mongoose.Types.ObjectId.isValid(petId)) {
       throw new ErrorWithStatus({ status: StatusCodes.BAD_REQUEST, message: 'Invalid Pet ID format' })
     }
 
-    const updatedPet = await Pet.findByIdAndUpdate(id, updateData, { new: true })
-
-    if (!updatedPet) {
-      throw new ErrorWithStatus({ status: StatusCodes.NOT_FOUND, message: 'Pet not found with the given ID' })
+    const existingPet = await Pet.findById(petId)
+    if (!existingPet) {
+      throw new ErrorWithStatus({ status: StatusCodes.NOT_FOUND, message: 'Pet not found' })
     }
+
+    if (petData.status === 'add_image') {
+      if (!imageUrl) {
+        throw new ErrorWithStatus({ status: StatusCodes.BAD_REQUEST, message: 'No file uploaded' })
+      }
+
+      if (!Array.isArray(existingPet.image_url)) {
+        existingPet.image_url = []
+      }
+
+      existingPet.image_url.push(...imageUrl)
+
+      const updatedPet = await Pet.findByIdAndUpdate(
+        petId,
+        {
+          ...petData,
+          image_url: existingPet.image_url
+        },
+        { new: true }
+      )
+      return updatedPet
+    }
+
+    const updatedPet = await Pet.findByIdAndUpdate(
+      petId,
+      {
+        ...petData,
+        image_url: Array.isArray(imageUrl) && imageUrl.length > 0 ? imageUrl : existingPet.image_url
+      },
+      { new: true }
+    )
 
     return updatedPet
   }
@@ -88,6 +116,10 @@ class PetService {
 
   async getAllPetNotApproved() {
     const pets = await Pet.find({ isApproved: false }).populate('submittedBy')
+    return pets
+  }
+  async getAllPetApproved() {
+    const pets = await Pet.find({ isApproved: true })
     return pets
   }
 
@@ -181,6 +213,10 @@ class PetService {
     pet.owner = userId
     await pet.save()
 
+    return pet
+  }
+  async getPetById(petId) {
+    const pet = await Pet.findById(petId)
     return pet
   }
 }
