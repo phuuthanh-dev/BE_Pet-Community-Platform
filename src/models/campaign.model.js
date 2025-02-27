@@ -9,9 +9,11 @@ const campaignSchema = new mongoose.Schema(
     endDate: { type: Date, required: true },
     targetAmount: { type: Number, required: true },
     currentAmount: { type: Number, default: 0 },
+    isActive: { type: Boolean, default: true },
     image: { type: String, required: true }
   },
   { timestamps: true }
 )
+campaignSchema.plugin(require('./plugins/paginate.plugin'))
 const Campaign = mongoose.model('Campaign', campaignSchema)
 module.exports = Campaign
