@@ -1,4 +1,5 @@
 const { USER_MESSAGE } = require('../constants/messages.js')
+const { StatusCodes } = require('http-status-codes')
 const catchAsync = require('../utils/catchAsync.js')
 const { OK } = require('../configs/response.config.js')
 const userService = require('../services/user.service.js')

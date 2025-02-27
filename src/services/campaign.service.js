@@ -13,6 +13,23 @@ class CampaignService {
     })
     return campaign
   }
+  getCampaigns = async (query) => {
+    const { sortBy, limit, page, q } = query
+    const filter = {}
+    const options = {
+      sortBy: sortBy || 'createdAt',
+      limit: limit ? parseInt(limit) : 10,
+      page: page ? parseInt(page) : 1,
+      allowSearchFields: ['title'],
+      q: q ?? '',
+      fields: '-password'
+    }
+    return await Campaign.paginate(filter, options)
+  }
+
+  stopCampaign = async (id) => {
+    await Campaign.findByIdAndUpdate(id, { isActive: false })
+  }
 }
 
 module.exports = new CampaignService()
