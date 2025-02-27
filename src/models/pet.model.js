@@ -21,6 +21,7 @@ const petSchema = new mongoose.Schema(
     owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
     submittedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false },
     isApproved: { type: Boolean, default: false },
+    isAddPost: { type: Boolean, default: false },
     isAdopted: {
       type: Boolean,
       default: false
