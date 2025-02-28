@@ -61,6 +61,7 @@ const ADOPTION_POST_MESSAGE = {
 }
 
 const CAMPAIGN_MESSAGE = {
+  GET_CAMPAIGNS_SUCCESSFULLY: 'Get campaigns successfully',
   CAMPAIGN_NOT_FOUND: 'Campaign not found',
   CAMPAIGN_CREATED_SUCCESSFULLY: 'Campaign created successfully',
   CAMPAIGN_UPDATED_SUCCESSFULLY: 'Campaign updated successfully',
@@ -69,6 +70,8 @@ const CAMPAIGN_MESSAGE = {
 }
 
 const DONATION_MESSAGE = {
+  TOP_5_DONATE_FETCHED_SUCCESSFULLY: 'Top 5 donate fetched successfully',
+  ALL_DONATION_FETCHED_SUCCESSFULLY: 'All donation fetched successfully',
   DONATION_CREATED_SUCCESSFULLY: 'Donation created successfully'
 }
 

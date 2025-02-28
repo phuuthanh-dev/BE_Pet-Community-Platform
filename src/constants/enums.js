@@ -13,7 +13,7 @@ const NOTIFICAITON_TYPE = {
 const ROLE = {
   USER: 'user',
   ADMIN: 'admin',
-  SERVICE_STAFF: 'service_staff',
+  SERVICE_STAFF: 'services_staff',
   FORUM_STAFF: 'forum_staff'
 }
 

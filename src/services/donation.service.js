@@ -80,9 +80,9 @@ class DonationService {
       sortBy: sortBy || 'createdAt',
       limit: limit ? parseInt(limit) : 5,
       page: page ? parseInt(page) : 1,
-      allowSearchFields: ['campaign'],
+      allowSearchFields: ['message'],
       q: q ?? '',
-      fields: '-campaign'
+      populate: 'user,campaign'
     }
     return await Donation.paginate({}, options)
   }

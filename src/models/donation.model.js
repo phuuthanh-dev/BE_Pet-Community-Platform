@@ -21,5 +21,6 @@ const donationSchema = new mongoose.Schema(
   },
   { timestamps: true }
 )
+donationSchema.plugin(require('./plugins/paginate.plugin'))
 const Donation = mongoose.model('Donation', donationSchema)
 module.exports = Donation
