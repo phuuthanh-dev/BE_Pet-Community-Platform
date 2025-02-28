@@ -13,5 +13,10 @@ class AdoptionPostController {
     const adoptionPost = await adoptPostService.createAdoptionPost(req, res)
     return CREATED(res, ADOPTION_POST_MESSAGE.CREATED_SUCCESS, adoptionPost)
   })
+
+  updatePost = catchAsync(async (req, res) => {
+    const updatedPost = await adoptPostService.updateAdoptionPost(req, res)
+    return OK(res, ADOPTION_POST_MESSAGE.UPDATED_SUCCESS, updatedPost)
+  })
 }
 module.exports = new AdoptionPostController()
