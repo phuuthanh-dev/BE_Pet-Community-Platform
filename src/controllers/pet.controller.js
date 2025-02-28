@@ -15,11 +15,32 @@ class PetController {
   })
 
   updatePet = catchAsync(async (req, res) => {
-    const updatedPet = await petService.updatePet(req.body)
+    const { petId } = req.params
+    if (!petId) {
+      throw new ErrorWithStatus({ status: StatusCodes.BAD_REQUEST, message: 'Pet ID is required for update' })
+    }
+
+    const existingPet = await petService.getPetById(petId)
+    if (!existingPet) {
+      throw new ErrorWithStatus({ status: StatusCodes.NOT_FOUND, message: 'Pet not found' })
+    }
+
+    let imageUrls
+    if (req.files && req.files.length > 0) {
+      imageUrls = await Promise.all(req.files.map((file) => cloudinaryService.uploadImage(file.buffer)))
+    } else {
+      imageUrls = existingPet.image_url || []
+    }
+
+    const updatedPet = await petService.updatePet(petId, req.body, imageUrls)
     return OK(res, 'Pet updated successfully', updatedPet)
   })
+
   deletePet = catchAsync(async (req, res) => {
     const { id } = req.params
+    if (!id) {
+      throw new ErrorWithStatus({ status: StatusCodes.BAD_REQUEST, message: 'Pet ID is required for delete' })
+    }
     const deletedPet = await petService.deletePet(id)
 
     return OK(res, 'Pet deleted successfully', deletedPet)
@@ -43,6 +64,10 @@ class PetController {
   })
   getPetNotApprove = catchAsync(async (req, res) => {
     const pet = await petService.getAllPetNotApproved()
+    return OK(res, 'Pet retrieved successfully', pet)
+  })
+  getPetApprove = catchAsync(async (req, res) => {
+    const pet = await petService.getAllPetApproved()
     return OK(res, 'Pet retrieved successfully', pet)
   })
   requestAdoptPet = catchAsync(async (req, res) => {

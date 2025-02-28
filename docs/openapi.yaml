@@ -7,15 +7,16 @@ info:
 servers:
   - url: http://localhost:3000/api/v1
     description: Local development server
-
+    
 components:
   securitySchemes:
     BearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
-
+      
   schemas:
+  
     User:
       type: object
       properties:
@@ -68,7 +69,7 @@ components:
           format: date
         role:
           type: string
-
+          
     Post:
       type: object
       properties:
@@ -105,7 +106,7 @@ components:
         updatedAt:
           type: string
           format: date-time
-
+          
     Pet:
       type: object
       properties:
@@ -148,7 +149,7 @@ components:
           type: array
           items:
             type: string
-
+            
     CreatePaymentRequest:
       type: object
       properties:
@@ -170,70 +171,70 @@ components:
       required:
         - amount
         - campaignIdA
-
+        
     Notification:
       type: object
       properties:
         id:
           type: string
-          example: '60f7c5e8f0d5d90015d28b3f'
+          example: "60f7c5e8f0d5d90015d28b3f"
         recipient:
           type: string
-          example: '60f7c5e8f0d5d90015d28b3e'
+          example: "60f7c5e8f0d5d90015d28b3e"
         sender:
           type: string
-          example: '60f7c5e8f0d5d90015d28b3d'
+          example: "60f7c5e8f0d5d90015d28b3d"
         type:
           type: string
           enum: [like, comment, follow, mention]
-          example: 'like'
+          example: "like"
         post:
           type: string
           nullable: true
-          example: '60f7c5e8f0d5d90015d28b3a'
+          example: "60f7c5e8f0d5d90015d28b3a"
         read:
           type: boolean
           example: false
         message:
           type: string
-          example: 'User123 liked your post.'
+          example: "User123 liked your post."
         createdAt:
           type: string
           format: date-time
         updatedAt:
           type: string
           format: date-time
-
+          
     PaymentLinkResponse:
       type: object
       properties:
         paymentUrl:
           type: string
           format: uri
-          example: 'https://payment.provider.com/checkout/12345'
+          example: "https://payment.provider.com/checkout/12345"
         expiresAt:
           type: string
           format: date-time
       required:
         - paymentUrl
         - expiresAt
-
+        
     CancelPaymentRequest:
       type: object
       properties:
         paymentId:
           type: string
           format: uuid
-          example: 'c29d9c21-4b60-4b11-9f00-d8f6e3a3c21f'
+          example: "c29d9c21-4b60-4b11-9f00-d8f6e3a3c21f"
       required:
         - paymentId
-
+        
     PaymentWebhook:
       type: object
       properties:
         eventType:
           type: string
-          example: 'PAYMENT_COMPLETED'
+          example: "PAYMENT_COMPLETED"
         paymentId:
           type: string
           format: uuid
@@ -244,59 +245,59 @@ components:
         - eventType
         - paymentId
         - timestamp
-
+        
     Message:
       type: object
       properties:
         _id:
           type: string
-          example: '60d21b4667d0d8992e610c85'
+          example: "60d21b4667d0d8992e610c85"
         senderId:
           type: string
-          example: '60d21b4667d0d8992e610c81'
+          example: "60d21b4667d0d8992e610c81"
         receiverId:
           type: string
-          example: '60d21b4667d0d8992e610c82'
+          example: "60d21b4667d0d8992e610c82"
         message:
           type: string
-          example: 'Hello, how are you?'
+          example: "Hello, how are you?"
         createdAt:
           type: string
           format: date-time
         updatedAt:
           type: string
           format: date-time
-
+          
     Donation:
       type: object
       properties:
         _id:
           type: string
-          example: '60d21b4667d0d8992e610c85'
+          example: "60d21b4667d0d8992e610c85"
         user:
           type: string
-          example: '60d21b4667d0d8992e610c81'
+          example: "60d21b4667d0d8992e610c81"
         campaign:
           type: string
-          example: '60d21b4667d0d8992e610c82'
+          example: "60d21b4667d0d8992e610c82"
         amount:
           type: number
           example: 100.0
         description:
           type: string
-          example: 'Donation for animal rescue'
+          example: "Donation for animal rescue"
         code:
           type: string
-          example: 'DON12345'
+          example: "DON12345"
         paymentUrl:
           type: string
-          example: 'https://paymentgateway.com/pay/DON12345'
+          example: "https://paymentgateway.com/pay/DON12345"
         counterAccountName:
           type: string
-          example: 'John Doe'
+          example: "John Doe"
         counterAccountNumber:
           type: string
-          example: '123456789'
+          example: "123456789"
         transactionDateTime:
           type: string
           format: date-time
@@ -306,7 +307,7 @@ components:
             - PENDING
             - COMPLETED
             - FAILED
-          example: 'COMPLETED'
+          example: "COMPLETED"
         createdAt:
           type: string
           format: date-time
@@ -322,40 +323,40 @@ components:
           properties:
             _id:
               type: string
-              example: '60d21b4667d0d8992e610c81'
+              example: "60d21b4667d0d8992e610c81"
             name:
               type: string
-              example: 'John Doe'
+              example: "John Doe"
             email:
               type: string
-              example: 'johndoe@example.com'
+              example: "johndoe@example.com"
         totalAmount:
           type: number
           example: 500.0
-
+        
     Campaign:
       type: object
       properties:
         _id:
           type: string
-          example: '60d21b4667d0d8992e610c99'
+          example: "60d21b4667d0d8992e610c99"
         user:
           type: string
-          example: '60d21b4667d0d8992e610c81'
+          example: "60d21b4667d0d8992e610c81"
         title:
           type: string
-          example: 'Save the Stray Animals'
+          example: "Save the Stray Animals"
         description:
           type: string
-          example: 'A campaign to help stray animals find a home.'
+          example: "A campaign to help stray animals find a home."
         startDate:
           type: string
           format: date
-          example: '2025-01-01'
+          example: "2025-01-01"
         endDate:
           type: string
           format: date
-          example: '2025-12-31'
+          example: "2025-12-31"
         targetAmount:
           type: number
           example: 5000.0
@@ -364,7 +365,7 @@ components:
           example: 1200.0
         image:
           type: string
-          example: 'https://example.com/campaign.jpg'
+          example: "https://example.com/campaign.jpg"
         createdAt:
           type: string
           format: date-time
@@ -384,63 +385,63 @@ components:
       properties:
         title:
           type: string
-          example: 'Save the Stray Animals'
+          example: "Save the Stray Animals"
         description:
           type: string
-          example: 'A campaign to help stray animals find a home.'
+          example: "A campaign to help stray animals find a home."
         startDate:
           type: string
           format: date
-          example: '2025-01-01'
+          example: "2025-01-01"
         endDate:
           type: string
           format: date
-          example: '2025-12-31'
+          example: "2025-12-31"
         targetAmount:
           type: number
           example: 5000.0
         image:
           type: string
-          example: 'https://example.com/campaign.jpg'
+          example: "https://example.com/campaign.jpg"
 
     Blog:
       type: object
       properties:
         _id:
           type: string
-          example: '60d21b4667d0d8992e610c99'
+          example: "60d21b4667d0d8992e610c99"
         title:
           type: string
-          example: 'How to Take Care of a Cat'
+          example: "How to Take Care of a Cat"
         content:
           type: string
-          example: 'Taking care of a cat requires daily feeding, grooming, and playtime.'
+          example: "Taking care of a cat requires daily feeding, grooming, and playtime."
         category:
           type: string
-          enum: ['Dogs', 'Cats']
-          example: 'Cats'
+          enum: ["Dogs", "Cats"]
+          example: "Cats"
         thumbnail:
           type: string
-          example: 'https://example.com/blog-thumbnail.jpg'
+          example: "https://example.com/blog-thumbnail.jpg"
         author:
           type: object
           properties:
             _id:
               type: string
-              example: '60d21b4667d0d8992e610c81'
+              example: "60d21b4667d0d8992e610c81"
             username:
               type: string
-              example: 'john_doe'
+              example: "john_doe"
         likes:
           type: array
           items:
             type: string
-          example: ['60d21b4667d0d8992e610c90', '60d21b4667d0d8992e610c91']
+          example: ["60d21b4667d0d8992e610c90", "60d21b4667d0d8992e610c91"]
         comments:
           type: array
           items:
             type: string
-          example: ['60d21b4667d0d8992e610c92', '60d21b4667d0d8992e610c93']
+          example: ["60d21b4667d0d8992e610c92", "60d21b4667d0d8992e610c93"]
         isPublished:
           type: boolean
           example: true
@@ -461,14 +462,14 @@ components:
       properties:
         title:
           type: string
-          example: 'How to Take Care of a Cat'
+          example: "How to Take Care of a Cat"
         content:
           type: string
-          example: 'Taking care of a cat requires daily feeding, grooming, and playtime.'
+          example: "Taking care of a cat requires daily feeding, grooming, and playtime."
         category:
           type: string
-          enum: ['Dogs', 'Cats']
-          example: 'Cats'
+          enum: ["Dogs", "Cats"]
+          example: "Cats"
         thumbnail:
           type: string
           format: binary
@@ -520,7 +521,7 @@ components:
           format: uuid
         caption:
           type: string
-          example: 'Looking for a loving home for this adorable puppy!'
+          example: "Looking for a loving home for this adorable puppy!"
         image:
           type: array
           items:
@@ -571,7 +572,7 @@ components:
         - pet
         - adopt_status
         - author
-
+        
     AdminStatsResponse:
       type: object
       properties:
@@ -589,6 +590,7 @@ components:
               total:
                 type: number
                 description: Total donation amount for the month
+
 
 tags:
   - name: User
@@ -615,7 +617,7 @@ tags:
 paths:
   /users/{username}/profile:
     get:
-      tags:
+      tags: 
         - User
       summary: Get user profile by username
       security:
@@ -636,7 +638,7 @@ paths:
 
   /users/id/{id}/profile:
     get:
-      tags:
+      tags: 
         - User
       summary: Get user profile by ID
       security:
@@ -657,7 +659,7 @@ paths:
 
   /users/profile/edit:
     post:
-      tags:
+      tags: 
         - User
       summary: Edit user profile
       security:
@@ -686,7 +688,7 @@ paths:
 
   /users/suggested:
     get:
-      tags:
+      tags: 
         - User
       summary: Get suggested users
       security:
@@ -697,7 +699,7 @@ paths:
 
   /users/followorunfollow/{id}:
     post:
-      tags:
+      tags: 
         - User
       summary: Follow or unfollow a user
       security:
@@ -714,7 +716,7 @@ paths:
 
   /users/chat-users:
     get:
-      tags:
+      tags: 
         - User
       summary: Get chat users
       security:
@@ -725,7 +727,7 @@ paths:
 
   /users/all:
     get:
-      tags:
+      tags: 
         - User
       summary: Get all users
       security:
@@ -736,7 +738,7 @@ paths:
 
   /post/addpost:
     post:
-      tags:
+      tags: 
         - Post
       summary: Add a new post
       security:
@@ -748,14 +750,14 @@ paths:
             schema:
               $ref: '#/components/schemas/Post'
       responses:
-        '201':
+        "201":
           description: Post created successfully
-        '400':
+        "400":
           description: Invalid request data
 
   /post/all:
     get:
-      tags:
+      tags: 
         - Post
       summary: Get all posts
       security:
@@ -770,7 +772,7 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: List of posts
 
   /userpost/all:
@@ -852,7 +854,7 @@ paths:
 
   /post/{id}/like:
     put:
-      tags:
+      tags: 
         - Post
       summary: Like a post
       security:
@@ -864,12 +866,12 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Post liked successfully
 
   /post/{id}/dislike:
     put:
-      tags:
+      tags: 
         - Post
       summary: Dislike a post
       security:
@@ -881,12 +883,12 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Post disliked successfully
 
   /post/{id}/comment:
     post:
-      tags:
+      tags: 
         - Post
       summary: Add a comment to a post
       security:
@@ -904,7 +906,7 @@ paths:
             schema:
               $ref: '#/components/schemas/Post'
       responses:
-        '201':
+        "201":
           description: Comment added successfully
 
   /{id}/comment/all:
@@ -1085,7 +1087,7 @@ paths:
 
   /post/{id}/bookmark:
     get:
-      tags:
+      tags: 
         - Post
       summary: Bookmark or unbookmark a post
       security:
@@ -1097,12 +1099,12 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Post bookmarked/unbookmarked successfully
-
+          
   /pets/add:
     post:
-      tags:
+      tags: 
         - Pet
       summary: Add a new pet
       security:
@@ -1120,10 +1122,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Pet'
-
+  
   /pets/update:
     post:
-      tags:
+      tags: 
         - Pet
       summary: Update an existing pet
       security:
@@ -1144,7 +1146,7 @@ paths:
 
   /pets/delete/{id}:
     delete:
-      tags:
+      tags: 
         - Pet
       summary: Delete a pet
       security:
@@ -1161,7 +1163,7 @@ paths:
 
   /pets/submit:
     post:
-      tags:
+      tags: 
         - Pet
       summary: Submit a pet for approval
       security:
@@ -1178,7 +1180,7 @@ paths:
 
   /pets/approve/{petId}:
     post:
-      tags:
+      tags: 
         - Pet
       summary: Approve a pet listing
       security:
@@ -1230,7 +1232,7 @@ paths:
 
   /pets/request/{petId}:
     post:
-      tags:
+      tags: 
         - Pet
       summary: Request to adopt a pet
       security:
@@ -1247,7 +1249,7 @@ paths:
 
   /pets/adopt/{petId}:
     post:
-      tags:
+      tags: 
         - Pet
       summary: Adopt a pet
       security:
@@ -1268,8 +1270,8 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: 'Pet adopted successfully'
-
+                    example: "Pet adopted successfully"
+          
   /notifications/all:
     get:
       tags:
@@ -1299,7 +1301,7 @@ paths:
             type: string
           description: Field to sort by
       responses:
-        '200':
+        "200":
           description: List of notifications retrieved successfully
           content:
             application/json:
@@ -1310,7 +1312,7 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Notification'
-
+                      
   /payment/member/create-payment-link:
     post:
       tags:
@@ -1319,19 +1321,19 @@ paths:
       security:
         - BearerAuth: []
       requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreatePaymentRequest'
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatePaymentRequest'
       responses:
-        '200':
+        "200":
           description: Payment link created successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/PaymentLinkResponse'
-
+  
   /payment/cancel-payment-link:
     put:
       tags:
@@ -1344,9 +1346,9 @@ paths:
             schema:
               $ref: '#/components/schemas/CancelPaymentRequest'
       responses:
-        '200':
+        "200":
           description: Payment link canceled successfully
-
+  
   /payment/receive-hook:
     post:
       tags:
@@ -1359,9 +1361,9 @@ paths:
             schema:
               $ref: '#/components/schemas/PaymentWebhook'
       responses:
-        '200':
+        "200":
           description: Webhook processed successfully
-
+  
   /messages/{id}:
     post:
       tags:
@@ -1386,9 +1388,9 @@ paths:
               properties:
                 textMessage:
                   type: string
-                  example: 'Hello, how are you?'
+                  example: "Hello, how are you?"
       responses:
-        '201':
+        "201":
           description: Message sent successfully
           content:
             application/json:
@@ -1399,10 +1401,10 @@ paths:
                     type: boolean
                     example: true
                   newMessage:
-                    $ref: '#/components/schemas/Message'
-        '400':
+                    $ref: "#/components/schemas/Message"
+        "400":
           description: Bad request
-        '401':
+        "401":
           description: Unauthorized
 
     get:
@@ -1420,15 +1422,15 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Messages fetched successfully
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Message'
-        '404':
+                  $ref: "#/components/schemas/Message"
+        "404":
           description: No conversation found
 
   /donations:
@@ -1506,19 +1508,19 @@ paths:
       security:
         - BearerAuth: []
       responses:
-        '200':
+        "200":
           description: Top 5 donors retrieved successfully
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/TopDonor'
-        '404':
+                  $ref: "#/components/schemas/TopDonor"
+        "404":
           description: No active campaign found
-        '401':
+        "401":
           description: Unauthorized
-
+          
   /campaigns:
     post:
       tags:
@@ -1532,17 +1534,17 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CampaignRequest'
+              $ref: "#/components/schemas/CampaignRequest"
       responses:
-        '201':
+        "201":
           description: Campaign created successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Campaign'
-        '400':
+                $ref: "#/components/schemas/Campaign"
+        "400":
           description: Bad request
-        '401':
+        "401":
           description: Unauthorized
 
   /campaigns/current:
@@ -1554,17 +1556,17 @@ paths:
       security:
         - BearerAuth: []
       responses:
-        '200':
+        "200":
           description: Current campaign retrieved successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Campaign'
-        '404':
+                $ref: "#/components/schemas/Campaign"
+        "404":
           description: No active campaign found
-        '401':
+        "401":
           description: Unauthorized
-  /blogs/create:
+  /blog/create:
     post:
       tags:
         - Blogs
@@ -1577,20 +1579,20 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/BlogRequest'
+              $ref: "#/components/schemas/BlogRequest"
       responses:
-        '201':
+        "201":
           description: Blog created successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Blog'
-        '400':
+                $ref: "#/components/schemas/Blog"
+        "400":
           description: Bad request
-        '401':
+        "401":
           description: Unauthorized
 
-  /blogs/all:
+  /blog/all:
     get:
       tags:
         - Blogs
@@ -1613,16 +1615,16 @@ paths:
             type: string
           description: Search query for blog title or content
       responses:
-        '200':
+        "200":
           description: Blogs retrieved successfully
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Blog'
+                  $ref: "#/components/schemas/Blog"
 
-  /blogs/{id}:
+  /blog/{id}:
     get:
       tags:
         - Blogs
@@ -1636,13 +1638,13 @@ paths:
             type: string
           description: Blog ID
       responses:
-        '200':
+        "200":
           description: Blog retrieved successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Blog'
-        '404':
+                $ref: "#/components/schemas/Blog"
+        "404":
           description: Blog not found
 
     put:
@@ -1664,17 +1666,17 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/BlogRequest'
+              $ref: "#/components/schemas/BlogRequest"
       responses:
-        '200':
+        "200":
           description: Blog updated successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Blog'
-        '403':
+                $ref: "#/components/schemas/Blog"
+        "403":
           description: Unauthorized to update this blog
-        '404':
+        "404":
           description: Blog not found
 
     delete:
@@ -1692,11 +1694,11 @@ paths:
             type: string
           description: Blog ID
       responses:
-        '200':
+        "200":
           description: Blog deleted successfully
-        '403':
+        "403":
           description: Unauthorized to delete this blog
-        '404':
+        "404":
           description: Blog not found
 
   /auth/register:
@@ -1770,7 +1772,7 @@ paths:
                 $ref: '#/components/schemas/AuthResponse'
         '401':
           description: Invalid or expired refresh token
-
+  
   /adoption-post/all:
     get:
       summary: Get all adoption posts
@@ -1812,7 +1814,7 @@ paths:
                   $ref: '#/components/schemas/AdoptionPost'
         401:
           description: Unauthorized
-
+          
   /admin/stats:
     get:
       tags:
@@ -1829,7 +1831,7 @@ paths:
                 $ref: '#/components/schemas/AdminStatsResponse'
         '403':
           description: Unauthorized access
-
+          
   /admin/staffs:
     get:
       tags:
@@ -1861,7 +1863,7 @@ paths:
             type: string
             default: createdAt
       responses:
-        '200':
+        "200":
           description: Successfully retrieved staff members.
           content:
             application/json:
@@ -1873,7 +1875,7 @@ paths:
                     example: success
                   message:
                     type: string
-                    example: 'Staff members retrieved successfully'
+                    example: "Staff members retrieved successfully"
                   data:
                     type: array
                     items:
@@ -1881,18 +1883,18 @@ paths:
                       properties:
                         _id:
                           type: string
-                          example: '60d0fe4f5311236168a109ca'
+                          example: "60d0fe4f5311236168a109ca"
                         username:
                           type: string
-                          example: 'staffUser123'
+                          example: "staffUser123"
                         role:
                           type: string
                           enum: [SERVICE_STAFF, FORUM_STAFF]
-                          example: 'SERVICE_STAFF'
+                          example: "SERVICE_STAFF"
                         isActive:
                           type: boolean
                           example: true
-        '500':
+        "500":
           description: Internal server error.
           content:
             application/json:
@@ -1904,4 +1906,5 @@ paths:
                     example: error
                   message:
                     type: string
-                    example: 'Failed to fetch staffs'
+                    example: "Failed to fetch staffs"
+

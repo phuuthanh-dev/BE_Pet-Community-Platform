@@ -17,7 +17,7 @@ router.post(
   PetController.addNewPet
 )
 router.post(
-  '/update',
+  '/update/:petId',
   isAuthenticated,
   validate(PetValidation.updatePet),
   upload.array('image_url'),
@@ -33,6 +33,7 @@ router.post(
 )
 router.post('/approve/:petId', isAuthenticated, PetController.adminApprovePet)
 router.get('/not-approved', isAuthenticated, PetController.getPetNotApprove)
+router.get('/approved', isAuthenticated, PetController.getPetApprove)
 router.post('/adopt/:petId', isAuthenticated, PetController.userAdoptPet)
 router.post('/request/:petId', isAuthenticated, PetController.requestAdoptPet)
 

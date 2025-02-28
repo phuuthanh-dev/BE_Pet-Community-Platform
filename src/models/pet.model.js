@@ -13,7 +13,7 @@ const petSchema = new mongoose.Schema(
       default: 'Healthy'
     },
     description: { type: String, required: true, trim: true, maxlength: 500 },
-    image_url: { type: [String], required: false, trim: true },
+    image_url: { type: [[{ type: String }]], required: false, trim: true },
     size: { type: String, required: true, trim: true, maxlength: 32 },
     coat: { type: String, required: true, trim: true, maxlength: 32 },
     temperament: { type: String, required: true, trim: true, maxlength: 32 },

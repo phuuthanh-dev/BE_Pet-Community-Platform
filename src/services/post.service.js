@@ -74,10 +74,6 @@ class PostService {
     return await Post.findById(postId)
       .populate('author', 'username profilePicture isVerified')
       .populate({
-        path: 'likes',
-        sort: { createdAt: -1 }
-      })
-      .populate({
         path: 'comments',
         sort: { createdAt: -1 },
         populate: {
