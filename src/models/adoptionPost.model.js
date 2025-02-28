@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 
 const adoptionPostSchema = new mongoose.Schema(
   {
@@ -16,18 +16,16 @@ const adoptionPostSchema = new mongoose.Schema(
     },
     author: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true },
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-    tags: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    location: { type: String, required: true },
     isDeleted: { type: Boolean, default: false, index: true },
-    isBlocked: { type: Boolean, default: false },
-    isApproved: { type: Boolean, default: false, index: true },
-    isRejected: { type: Boolean, default: false },
-    isHidden: { type: Boolean, default: false }
+    isHidden: { type: Boolean, default: false },
+    updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true }
   },
   { timestamps: true }
-);
+)
 
 // Pagination Plugin
-adoptionPostSchema.plugin(require('./plugins/paginate.plugin'));
+adoptionPostSchema.plugin(require('./plugins/paginate.plugin'))
 
-const AdoptionPost = mongoose.model('AdoptionPost', adoptionPostSchema);
-module.exports = AdoptionPost;
+const AdoptionPost = mongoose.model('AdoptionPost', adoptionPostSchema)
+module.exports = AdoptionPost

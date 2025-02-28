@@ -38,9 +38,15 @@ class PostService {
     }
   }
 
-  getAllPost = async (query) => {
-    const { sortBy, limit, page, q } = query
-    const filter = { isHidden: false }
+  getAllPosts = async (query) => {
+    const { sortBy, limit, page, q, ...filters } = query // Extract additional filters
+
+    const defaultFilters = {
+      isHidden: false,
+      isBlocked: false,
+      isDeleted: false
+    }
+
     const options = {
       sortBy: sortBy || 'createdAt',
       limit: limit ? parseInt(limit) : 5,
@@ -50,7 +56,10 @@ class PostService {
       populate: 'author,comments,comments.author'
     }
 
-    return await postRepo.getAll(filter, options)
+    // Merge default filters with filters from query (e.g., isApproved, isRejected)
+    const finalFilter = { ...defaultFilters, ...filters }
+
+    return await postRepo.getAll(finalFilter, options)
   }
 
   getUserPost = async (userId) => {

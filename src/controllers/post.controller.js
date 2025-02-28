@@ -43,7 +43,6 @@ class PostController {
 
       try {
         if (fileType === 'image') {
-          // Process and upload image
           const optimizedImageBuffer = await sharp(mediaFile.buffer)
             .resize({ width: 800, height: 800, fit: 'inside' })
             .toFormat('jpeg', { quality: 80 })
@@ -102,7 +101,7 @@ class PostController {
   })
 
   getAllPost = catchAsync(async (req, res) => {
-    const posts = await postService.getAllPost(req.query)
+    const posts = await postService.getAllPosts(req.query)
     return OK(res, POST_MESSAGE.POST_FETCHED_SUCCESSFULLY, posts)
   })
 
@@ -145,7 +144,7 @@ class PostController {
       }
 
       return res.status(200).json({ message: 'Post liked', success: true })
-    } catch (error) { }
+    } catch (error) {}
   }
   dislikePost = async (req, res) => {
     try {
@@ -175,7 +174,7 @@ class PostController {
       }
 
       return res.status(200).json({ message: 'Post disliked', success: true })
-    } catch (error) { }
+    } catch (error) {}
   }
   addComment = async (req, res) => {
     try {
