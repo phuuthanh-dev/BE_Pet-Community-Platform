@@ -29,5 +29,10 @@ const TRANSACTION_STATUS = {
   COMPLETED: 'completed',
   CANCELLED: 'cancelled'
 }
+const ADOPTION_POST_STATUS = {
+  PENDING: 'Pending',
+  AVAILABLE: 'Available',
+  ADOPTED: 'Adopted'
+}
 
-module.exports = { GENDER, NOTIFICAITON_TYPE, ROLE, TokenType, TRANSACTION_STATUS }
+module.exports = { GENDER, NOTIFICAITON_TYPE, ADOPTION_POST_STATUS, ROLE, TokenType, TRANSACTION_STATUS }
