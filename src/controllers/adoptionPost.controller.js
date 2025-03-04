@@ -1,7 +1,10 @@
 const catchAsync = require('../utils/catchAsync.js')
 const { CREATED, OK } = require('../configs/response.config.js')
-const { ADOPTION_POST_MESSAGE } = require('../constants/messages.js')
+const { ADOPTION_POST_MESSAGE, ADOPTION_FORM_MESSAGE } = require('../constants/messages.js')
 const adoptPostService = require('../services/adoptionPost.service.js')
+const User = require('../models/user.model.js')
+const AdoptionForm = require('../models/adoptionForm.model.js')
+const AdoptionPost = require('../models/adoptionPost.model.js')
 
 class AdoptionPostController {
   getAllPost = catchAsync(async (req, res) => {

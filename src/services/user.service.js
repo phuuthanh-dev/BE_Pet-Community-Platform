@@ -39,8 +39,8 @@ class UserService {
         })
       }
     }
-    console.log(updateData);
-    
+    console.log(updateData)
+
     Object.assign(user, updateData)
     await user.save()
     return user

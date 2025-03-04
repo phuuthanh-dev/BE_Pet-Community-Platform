@@ -59,6 +59,14 @@ const ADOPTION_POST_MESSAGE = {
   FETCH_ALL_SUCCESS: 'Successfully retrieved all adoption posts',
   FETCH_SUCCESS: 'Successfully retrieved adoption post'
 }
+const ADOPTION_FORM_MESSAGE = {
+  NOT_FOUND: 'Adoption form not found',
+  CREATED_SUCCESS: 'Adoption form created successfully',
+  UPDATED_SUCCESS: 'Adoption form updated successfully',
+  DELETED_SUCCESS: 'Adoption form deleted successfully',
+  FETCH_ALL_SUCCESS: 'Successfully retrieved all adoption forms',
+  FETCH_SUCCESS: 'Successfully retrieved adoption form'
+}
 
 const CAMPAIGN_MESSAGE = {
   GET_CAMPAIGNS_SUCCESSFULLY: 'Get campaigns successfully',
@@ -111,5 +119,6 @@ module.exports = {
   MESSAGE_MESSAGE,
   TRANSACTION_MESSAGE,
   BLOG_MESSAGE,
-  ADMIN_MESSAGE
+  ADMIN_MESSAGE,
+  ADOPTION_FORM_MESSAGE
 }
