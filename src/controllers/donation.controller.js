@@ -13,6 +13,11 @@ class DonationController {
     const donations = await donationService.getAllDonation(req.query)
     return OK(res, DONATION_MESSAGE.ALL_DONATION_FETCHED_SUCCESSFULLY, donations)
   })
+
+  getDonationByUserId = catchAsync(async (req, res) => {
+    const donations = await donationService.getDonationByUserId(req.params.id, req.query)
+    return OK(res, DONATION_MESSAGE.DONATION_FETCHED_SUCCESSFULLY, donations)
+  })
 }
 
 module.exports = new DonationController()

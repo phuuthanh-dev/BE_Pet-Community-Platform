@@ -21,5 +21,10 @@ class AdoptionPostController {
     const updatedPost = await adoptPostService.updateAdoptionPost(req, res)
     return OK(res, ADOPTION_POST_MESSAGE.UPDATED_SUCCESS, updatedPost)
   })
+
+  getPostByBreed = catchAsync(async (req, res) => {
+    const post = await adoptPostService.getPostByBreed(req.params.breedId, req.query)
+    return OK(res, ADOPTION_POST_MESSAGE.FETCH_SUCCESS, post)
+  })
 }
 module.exports = new AdoptionPostController()

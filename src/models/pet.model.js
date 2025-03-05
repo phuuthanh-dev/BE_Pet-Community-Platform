@@ -31,7 +31,8 @@ const petSchema = new mongoose.Schema(
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
       }
-    ]
+    ],
+    breed: { type: mongoose.Schema.Types.ObjectId, ref: 'Breed', required: true }
   },
   { timestamps: true }
 )

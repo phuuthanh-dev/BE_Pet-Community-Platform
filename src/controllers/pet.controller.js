@@ -78,6 +78,10 @@ class PetController {
     const pet = await petService.adoptPet(req.id, req.params.petId)
     return OK(res, 'Pet adopted successfully', pet)
   })
+  getPetByBreed = catchAsync(async (req, res) => {
+    const pet = await petService.getPetByBreed(req.params.breedId)
+    return OK(res, 'Pet retrieved successfully', pet)
+  })
 }
 
 module.exports = new PetController()

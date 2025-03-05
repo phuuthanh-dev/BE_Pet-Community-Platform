@@ -1,6 +1,6 @@
 const express = require('express')
 const multer = require('multer')
-const { getAllPost, addNewPost, updatePost } = require('../controllers/adoptionPost.controller.js')
+const { getAllPost, addNewPost, updatePost, getPostByBreed } = require('../controllers/adoptionPost.controller.js')
 const isAuthenticated = require('../middlewares/isAuthenticated.js')
 const checkRole = require('../middlewares/checkRole.js')
 const { ROLE } = require('../constants/enums.js')
@@ -16,5 +16,5 @@ router
   .route('/form')
   .get(isAuthenticated, checkRole(ROLE.SERVICE_STAFF), getAll)
   .post(isAuthenticated, checkRole(ROLE.SERVICE_STAFF), createAdoptionForm)
-
+router.route('/breed/:breedId').get(isAuthenticated, getPostByBreed)
 module.exports = router

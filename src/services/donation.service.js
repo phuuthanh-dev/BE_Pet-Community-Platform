@@ -86,5 +86,18 @@ class DonationService {
     }
     return await Donation.paginate({}, options)
   }
+
+  getDonationByUserId = async (userId, query) => {
+    const { q, page, limit, sortBy } = query
+    const options = {
+      sortBy: sortBy || 'createdAt',
+      limit: limit ? parseInt(limit) : 5,
+      page: page ? parseInt(page) : 1,
+      allowSearchFields: ['message'],
+      q: q ?? '',
+      populate: 'user,campaign'
+    }
+    return await Donation.paginate({ user: userId }, options)
+  }
 }
 module.exports = new DonationService()

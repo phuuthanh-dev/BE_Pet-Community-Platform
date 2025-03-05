@@ -80,7 +80,8 @@ const CAMPAIGN_MESSAGE = {
 const DONATION_MESSAGE = {
   TOP_5_DONATE_FETCHED_SUCCESSFULLY: 'Top 5 donate fetched successfully',
   ALL_DONATION_FETCHED_SUCCESSFULLY: 'All donation fetched successfully',
-  DONATION_CREATED_SUCCESSFULLY: 'Donation created successfully'
+  DONATION_CREATED_SUCCESSFULLY: 'Donation created successfully',
+  DONATION_FETCHED_SUCCESSFULLY: 'Donation fetched successfully'
 }
 
 const MESSAGE_MESSAGE = {

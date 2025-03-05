@@ -243,6 +243,25 @@ class AdoptionPostService {
 
     return updatedPost
   }
+
+  getPostByBreed = async (breedId, query) => {
+    const pet = await Pet.find({ breed: breedId })
+    if (!pet) {
+      throw new Error('Pet not found.')
+    }
+    const { sortBy, limit, page, q } = query
+    const filters = { isDeleted: false, isHidden: false, pet: { $in: pet } }
+    const options = {
+      sortBy: sortBy || 'createdAt',
+      limit: limit ? parseInt(limit) : 5,
+      page: page ? parseInt(page) : 1,
+      allowSearchFields: ['caption'],
+      populate: 'pet,author,likes',
+      q: q ?? ''
+    }
+
+    return await adoptionPostRepo.getAll(filters, options)
+  }
 }
 
 const adoptionPostService = new AdoptionPostService()
