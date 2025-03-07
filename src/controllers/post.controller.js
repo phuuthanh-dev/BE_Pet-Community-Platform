@@ -253,6 +253,19 @@ class PostController {
       console.log(error)
     }
   }
+  updatePost = async (req, res) => {
+    try {
+      const postId = req.params.id
+      console.log(req.body)
+      console.log(postId)
+      const post = await Post.findById(postId)
+      if (!post) return res.status(404).json({ message: 'Post not found', success: false })
+      await post.updateOne(req.body)
+      return res.status(200).json({ message: 'Post updated', success: true })
+    } catch (error) {
+      console.log(error)
+    }
+  }
   getPostById = catchAsync(async (req, res) => {
     const post = await postService.getPostById(req.params.id)
     return OK(res, POST_MESSAGE.GET_POST_SUCCESSFULLY, post)
