@@ -12,7 +12,8 @@ const {
   getCommentsOfPost,
   getPostById,
   getUserPost,
-  likePost
+  likePost,
+  updatePost
 } = require('../controllers/post.controller.js')
 const isAuthenticated = require('../middlewares/isAuthenticated.js')
 
@@ -26,7 +27,7 @@ router.route('/:id/dislike').put(isAuthenticated, dislikePost)
 router.route('/:id/comment').post(isAuthenticated, addComment)
 router.route('/:id/comment/all').post(isAuthenticated, getCommentsOfPost)
 router.route('/:id/getpostbyid').get(isAuthenticated, getPostById)
-router.route('/:id').delete(isAuthenticated, deletePost)
+router.route('/:id').delete(isAuthenticated, deletePost).put(isAuthenticated, updatePost)
 router.route('/:id/bookmark').get(isAuthenticated, bookmarkPost)
 
 module.exports = router

@@ -43,7 +43,7 @@ class PostService {
 
     const defaultFilters = {
       isHidden: false,
-      isBlocked: false,
+      // isBlocked: false,
       isDeleted: false
     }
 
