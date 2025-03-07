@@ -6,6 +6,7 @@ const AdoptionForm = require('../models/adoptionForm.model')
 const User = require('../models/user.model')
 const AdoptionPost = require('../models/adoptionPost.model')
 const { ADOPTION_POST_STATUS } = require('../constants/enums')
+const PeriodicCheck = require('../models/periodicCheck.model')
 
 class AdoptionFormController {
   createAdoptionForm = catchAsync(async (req, res) => {
@@ -53,6 +54,27 @@ class AdoptionFormController {
 
     const adoptionForms = await adoptionFormRepo.getAll(filters, options)
     return OK(res, ADOPTION_FORM_MESSAGE.FETCH_ALL_SUCCESS, adoptionForms)
+  }
+
+  async checkPeriodic(req, res) {
+    const { adoptionFormId, checkDate, status, notes, checkedBy } = req.body
+    console.log(adoptionFormId, checkDate, status, notes, checkedBy)
+    const periodicCheck = new PeriodicCheck({
+      adoptionFormId,
+      checkDate,
+      status,
+      notes,
+      checkedBy
+    })
+
+    const savedPeriodicCheck = await periodicCheck.save()
+    if(savedPeriodicCheck) {
+      const adoptionForm = await AdoptionForm.findById(adoptionFormId)
+      adoptionForm.periodicChecks.push(savedPeriodicCheck._id)
+      await adoptionForm.save()
+    }
+
+    return OK(res, ADOPTION_FORM_MESSAGE.ADD_PERIODIC_CHECK_SUCCESS, savedPeriodicCheck)
   }
 
   // Get single adoption form

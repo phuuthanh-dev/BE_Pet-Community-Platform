@@ -20,7 +20,7 @@ class AdoptionPostService {
       page: page ? parseInt(page) : 1,
       allowSearchFields: ['caption'],
       q: q ?? '',
-      populate: 'pet,author,likes'
+      populate: 'pet.breed,author,likes'
     }
 
     // Apply adopt_status filter if provided

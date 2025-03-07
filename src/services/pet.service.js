@@ -6,6 +6,7 @@ const cloudinaryService = require('../utils/cloudinary')
 const { getReceiverSocketId, io } = require('../socket/socket')
 const Notification = require('../models/notification.model')
 const { NOTIFICAITON_TYPE } = require('../constants/enums')
+const petRepo = require('../repositories/pet.repo')
 
 class PetService {
   async createPet(petData, imagelUrl) {
@@ -115,12 +116,27 @@ class PetService {
   }
 
   async getAllPetNotApproved() {
-    const pets = await Pet.find({ isApproved: false }).populate('submittedBy')
+    const pets = await Pet.find({ isApproved: false }).populate(['submittedBy', 'breed'])
     return pets
   }
-  async getAllPetApproved() {
-    const pets = await Pet.find({ isApproved: true })
-    return pets
+  async getAllPetApproved(query) {
+    const { sortBy, limit, page, q, ...filters } = query
+
+    const defaultFilters = { isApproved: true }
+
+    const options = {
+      sortBy: sortBy || 'createdAt',
+      limit: limit ? parseInt(limit) : 5,
+      page: page ? parseInt(page) : 1,
+      allowSearchFields: ['name'],
+      q: q ?? '',
+      populate: 'owner,breed'
+    }
+
+
+    const finalFilter = { ...defaultFilters, ...filters }
+
+    return await petRepo.getAll(finalFilter, options)
   }
 
   async approvePet(petId) {

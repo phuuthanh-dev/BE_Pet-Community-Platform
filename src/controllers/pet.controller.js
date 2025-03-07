@@ -1,6 +1,7 @@
 const catchAsync = require('../utils/catchAsync')
 const { OK, CREATED } = require('../configs/response.config')
 const petService = require('../services/pet.service')
+const breedService = require('../services/breed.service')
 const cloudinaryService = require('../utils/cloudinary')
 const ErrorWithStatus = require('../utils/errorWithStatus')
 const { StatusCodes } = require('http-status-codes')
@@ -8,6 +9,7 @@ const { StatusCodes } = require('http-status-codes')
 class PetController {
   addNewPet = catchAsync(async (req, res) => {
     const { petData } = req.body
+    console.log("nice",petData)
     const image_url = req.file
     const imagelUrl = await cloudinaryService.uploadImage(image_url.buffer)
     const newPet = await petService.createPet(petData, imagelUrl)
@@ -67,7 +69,7 @@ class PetController {
     return OK(res, 'Pet retrieved successfully', pet)
   })
   getPetApprove = catchAsync(async (req, res) => {
-    const pet = await petService.getAllPetApproved()
+    const pet = await petService.getAllPetApproved(req.query)
     return OK(res, 'Pet retrieved successfully', pet)
   })
   requestAdoptPet = catchAsync(async (req, res) => {
@@ -81,6 +83,10 @@ class PetController {
   getPetByBreed = catchAsync(async (req, res) => {
     const pet = await petService.getPetByBreed(req.params.breedId)
     return OK(res, 'Pet retrieved successfully', pet)
+  })
+  getBreeds = catchAsync(async (req, res) => {
+    const breeds = await breedService.getBreeds()
+    return OK(res, 'Get breeds successfully', breeds)
   })
 }
 
