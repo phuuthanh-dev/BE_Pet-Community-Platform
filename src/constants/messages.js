@@ -65,6 +65,7 @@ const ADOPTION_FORM_MESSAGE = {
   UPDATED_SUCCESS: 'Adoption form updated successfully',
   DELETED_SUCCESS: 'Adoption form deleted successfully',
   FETCH_ALL_SUCCESS: 'Successfully retrieved all adoption forms',
+  ADD_PERIODIC_CHECK_SUCCESS: 'Successfully added periodic check',
   FETCH_SUCCESS: 'Successfully retrieved adoption form'
 }
 

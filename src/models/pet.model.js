@@ -37,5 +37,6 @@ const petSchema = new mongoose.Schema(
   { timestamps: true }
 )
 
+petSchema.plugin(require('./plugins/paginate.plugin'))
 const Pet = mongoose.model('Pet', petSchema)
 module.exports = Pet
